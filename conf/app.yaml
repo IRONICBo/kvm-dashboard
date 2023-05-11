@@ -1,0 +1,12 @@
+app:
+  name: kvm-dashboard
+  version: 1.0
+  host: localhost
+  port: 5001
+  mode: debug # debug/release/test
+
+# database:
+#   influxdb:
+#     hostname: 127.0.0.1
+#     username: 
+#     password: 
