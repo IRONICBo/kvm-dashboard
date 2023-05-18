@@ -1,6 +1,7 @@
 package agent
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"kvm-dashboard/consts"
@@ -11,20 +12,24 @@ import (
 	libvirt "libvirt.org/libvirt-go"
 )
 
+// store started agents
+var StartedLibvirtAgents map[string]*LibvirtAgent
+
 type LibvirtAgent struct {
 	// *AgentInfo
 	AgentInterface
 	URL  string
 	conn *libvirt.Connect
-	// 这里改成conn应该会比较好，可以在Stop之类的方法里面获取到
 
+	Ctx         context.Context // one ctx for one goroutine
+	CancelFunc  context.CancelFunc
 	LibvirtData chan *data.LibvirtData
 }
 
 func NewLibvirtAgent(url string) (*LibvirtAgent, error) {
-	agent := &LibvirtAgent{
-		// LibvirtData: make(chan *data.LibvirtData, 100), // set the buffer size to 100
-		URL: url,
+	// init StartedLibvirtAgents
+	if StartedLibvirtAgents == nil {
+		StartedLibvirtAgents = make(map[string]*LibvirtAgent)
 	}
 
 	// connect to vm
@@ -32,6 +37,16 @@ func NewLibvirtAgent(url string) (*LibvirtAgent, error) {
 	if err != nil {
 		utils.Log.Error(fmt.Sprintf("Can not connect to libvirt: %#v", url), err)
 		return nil, err
+	}
+
+	// create context
+	ctx, cancelFunc := context.WithCancel(context.Background())
+
+	agent := &LibvirtAgent{
+		// LibvirtData: make(chan *data.LibvirtData, 100), // set the buffer size to 100
+		URL:        url,
+		Ctx:        ctx,
+		CancelFunc: cancelFunc,
 	}
 	agent.conn = conn
 
@@ -124,6 +139,10 @@ func (la *LibvirtAgent) VmSetUp(uuid, username, password string) error {
 
 // collect data
 func (la *LibvirtAgent) Start(uuid string) {
+	// store started agents
+	StartedLibvirtAgents[uuid] = la
+
+	utils.Log.Info(fmt.Sprintf("Start collect data: %#v", StartedLibvirtAgents))
 	la.LibvirtData = make(chan *data.LibvirtData, 100) // set the buffer size to 100
 
 	go func() {
@@ -137,53 +156,76 @@ func (la *LibvirtAgent) Start(uuid string) {
 		defer dom.Free()
 
 		for {
-			// Ref: https://libvirt.org/html/libvirt-libvirt-domain.html#virDomainGetCPUStats
-			// flags set 0 => unused
-			cpu_stats, err := dom.GetCPUStats(-1, 1, 0) // DomainCPUStats
-			if err != nil {
-				utils.Log.Error(fmt.Sprintf("Can not get cpu_stats: %#v", uuid), err)
+			// la.CancelFunc()
+			select {
+			case <-la.Ctx.Done():
+				utils.Log.Info(fmt.Sprintf("Stop StartReport goroutine: %#v", uuid))
 				return
-			}
-			memory_stats, err := dom.MemoryStats(uint32(libvirt.DOMAIN_MEMORY_STAT_NR), 0) // MemoryStats
-			if err != nil {
-				utils.Log.Error(fmt.Sprintf("Can not get memory_stats: %#v", uuid), err)
-				return
-			}
-			block_stats, err := dom.BlockStats("") // set "" to get all block stats
-			if err != nil {
-				utils.Log.Error(fmt.Sprintf("Can not get block_stats: %#v", uuid), err)
-				return
-			}
-
-			// get mac address
-			ifaces, err := dom.ListAllInterfaceAddresses(libvirt.DOMAIN_INTERFACE_ADDRESSES_SRC_AGENT)
-			if err != nil {
-				utils.Log.Error(fmt.Sprintf("Can not get ifaces: %#v", uuid), err)
-				return
-			}
-			var MAC_address string
-			for _, iface := range ifaces {
-				if len(iface.Hwaddr) > 0 && iface.Name == consts.INTERFACE_NAME {
-					MAC_address = iface.Hwaddr
+			default:
+				// Ref: https://libvirt.org/html/libvirt-libvirt-domain.html#virDomainGetCPUStats
+				// flags set 0 => unused
+				cpu_stats, err := dom.GetCPUStats(-1, 1, 0) // DomainCPUStats
+				if err != nil {
+					utils.Log.Error(fmt.Sprintf("Can not get cpu_stats: %#v", uuid), err)
+					return
 				}
-			}
-			interface_stats, err := dom.InterfaceStats(MAC_address) // use mac address or interface name
-			if err != nil {
-				utils.Log.Error(fmt.Sprintf("Can not get interface_stats: %#v", uuid), err)
-				return
-			}
+				memory_stats, err := dom.MemoryStats(uint32(libvirt.DOMAIN_MEMORY_STAT_NR), 0) // MemoryStats
+				if err != nil {
+					utils.Log.Error(fmt.Sprintf("Can not get memory_stats: %#v", uuid), err)
+					return
+				}
+				block_stats, err := dom.BlockStats("") // set "" to get all block stats
+				if err != nil {
+					utils.Log.Error(fmt.Sprintf("Can not get block_stats: %#v", uuid), err)
+					return
+				}
 
-			libvirtData := data.NewLibvirtData(cpu_stats[0], memory_stats, *block_stats, *interface_stats)
-			la.LibvirtData <- libvirtData // send data
+				// get mac address
+				ifaces, err := dom.ListAllInterfaceAddresses(libvirt.DOMAIN_INTERFACE_ADDRESSES_SRC_AGENT)
+				if err != nil {
+					utils.Log.Error(fmt.Sprintf("Can not get ifaces: %#v", uuid), err)
+					return
+				}
+				var MAC_address string
+				for _, iface := range ifaces {
+					if len(iface.Hwaddr) > 0 && iface.Name == consts.INTERFACE_NAME {
+						MAC_address = iface.Hwaddr
+					}
+				}
+				interface_stats, err := dom.InterfaceStats(MAC_address) // use mac address or interface name
+				if err != nil {
+					utils.Log.Error(fmt.Sprintf("Can not get interface_stats: %#v", uuid), err)
+					return
+				}
 
-			// delay
-			time.Sleep(time.Duration(consts.VM_DATA_REALTIME_INTERVAL_INTERVAL) * time.Second)
+				libvirtData := data.NewLibvirtData(cpu_stats[0], memory_stats, *block_stats, *interface_stats)
+				la.LibvirtData <- libvirtData // send data
+
+				// delay
+				time.Sleep(time.Duration(consts.VM_DATA_REALTIME_INTERVAL_INTERVAL) * time.Second)
+			}
 		}
 	}()
 }
 
 func (la *LibvirtAgent) Stop() {
 	la.conn.Close()
+	la.CancelFunc()
+}
+
+// Stop StartedLibvirtAgents
+func Stop(uuid string) error {
+	utils.Log.Info(fmt.Sprintf("Stop collect data: %#v", StartedLibvirtAgents))
+
+	agent, ok := StartedLibvirtAgents[uuid]
+	if !ok {
+		return errors.New("agent not found")
+	}
+
+	agent.Stop()
+	delete(StartedLibvirtAgents, uuid)
+
+	return nil
 }
 
 func (la *LibvirtAgent) Restart() error {

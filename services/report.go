@@ -1,6 +1,7 @@
 package services
 
 import (
+	"fmt"
 	"kvm-dashboard/consts"
 	"kvm-dashboard/model"
 	"kvm-dashboard/utils"
@@ -62,6 +63,9 @@ func (svc *Service) saveAndReportVMData(agent *agent.LibvirtAgent, uuid string) 
 		case <-time.After(60 * time.Second):
 			utils.Log.Info("Time out")
 			return
+		case <-agent.Ctx.Done():
+			utils.Log.Info(fmt.Sprintf("Stop saveAndReportVMData goroutine: %#v", uuid))
+			return
 		case data := <-agent.LibvirtData:
 			// report to ws
 			err := svc.Dao.WriteVMData(data, map[string]string{
@@ -72,6 +76,16 @@ func (svc *Service) saveAndReportVMData(agent *agent.LibvirtAgent, uuid string) 
 			}
 		}
 	}
+}
+
+func (svc *Service) StopReport(url, uuid string) error {
+	err := agent.Stop(uuid)
+	if err != nil {
+		utils.Log.Error("Can not stop agent", err)
+		return err
+	}
+
+	return nil
 }
 
 // get VM metrics
