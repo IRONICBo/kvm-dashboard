@@ -1,21 +1,21 @@
 package utils
 
-func LogWithInfo(args ...interface{}) {
-	log.Info(args)
-}
+// func LogWithInfo(args ...interface{}) {
+// 	Log.Info(args)
+// }
 
-func LogWithError(args ...interface{}) {
-	log.Error(args)
-}
+// func LogWithError(args ...interface{}) {
+// 	Log.Error(args)
+// }
 
-func LogWithWarn(args ...interface{}) {
-	log.Warn(args)
-}
+// func LogWithWarn(args ...interface{}) {
+// 	Log.Warn(args)
+// }
 
-func LogWithFatal(args ...interface{}) {
-	log.Fatal(args)
-}
+// func LogWithFatal(args ...interface{}) {
+// 	Log.Fatal(args)
+// }
 
-func LogWithPanic(args ...interface{}) {
-	log.Panic(args)
-}
+// func LogWithPanic(args ...interface{}) {
+// 	Log.Panic(args)
+// }

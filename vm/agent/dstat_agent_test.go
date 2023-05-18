@@ -50,8 +50,8 @@ func TestDstatAgent(t *testing.T) {
 		},
 	}
 
-	utils.LogWithInfo("Start dstat agent")
+	utils.Log.Info("Start dstat agent")
 
 	dstatAgent.Start()
-	// time.Sleep(10 * time.Second)
+	time.Sleep(5 * time.Second)
 }

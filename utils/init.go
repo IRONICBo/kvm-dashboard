@@ -9,14 +9,14 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-var log *logrus.Logger
+var Log *logrus.Logger
 
 func init() {
-	log = logrus.New()
-	log.SetFormatter(&logrus.TextFormatter{})
-	log.SetReportCaller(true)
+	Log = logrus.New()
+	Log.SetFormatter(&logrus.TextFormatter{})
+	Log.SetReportCaller(true)
 
-	log.SetFormatter(&logrus.TextFormatter{
+	Log.SetFormatter(&logrus.TextFormatter{
 		TimestampFormat: "2006-01-02 15:04:05.000",
 		FullTimestamp:   true,
 		CallerPrettyfier: func(f *runtime.Frame) (string, string) {
@@ -24,10 +24,10 @@ func init() {
 		},
 	})
 
-	log.SetOutput(os.Stdout)
-	log.SetLevel(logrus.DebugLevel) // Default log level
+	Log.SetOutput(os.Stdout)
+	Log.SetLevel(logrus.DebugLevel) // Default log level
 }
 
 func SetLogLevel(level logrus.Level) {
-	log.SetLevel(level)
+	Log.SetLevel(level)
 }

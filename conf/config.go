@@ -8,7 +8,8 @@ import (
 )
 
 type Config struct {
-	AppConf AppConf
+	AppConf      AppConf
+	InfluxDBConf InfluxDBConf
 }
 
 type AppConf struct {
@@ -19,16 +20,23 @@ type AppConf struct {
 	Mode    string
 }
 
+type InfluxDBConf struct {
+	URL    string
+	Token  string
+	Org    string
+	Bucket string
+}
+
 func InitConf() *Config {
 	viper.SetConfigType("yaml")
 	viper.AddConfigPath("conf")
 	viper.SetConfigName("app")
 
 	if err := viper.ReadInConfig(); err != nil {
-		utils.LogWithPanic(fmt.Errorf("fatal error config file: %w", err))
+		utils.Log.Panic(fmt.Errorf("fatal error config file: %w", err))
 		panic(fmt.Errorf("fatal error config file: %w", err))
 	}
-	utils.LogWithInfo("Using config file:", viper.ConfigFileUsed())
+	utils.Log.Info("Using config file:", viper.ConfigFileUsed())
 
 	config := &Config{
 		AppConf: AppConf{
@@ -37,6 +45,12 @@ func InitConf() *Config {
 			Host:    viper.GetString("app.host"),
 			Port:    viper.GetString("app.port"),
 			Mode:    viper.GetString("app.mode"),
+		},
+		InfluxDBConf: InfluxDBConf{
+			URL:    viper.GetString("influxdb.url"),
+			Token:  viper.GetString("influxdb.token"),
+			Org:    viper.GetString("influxdb.org"),
+			Bucket: viper.GetString("influxdb.bucket"),
 		},
 	}
 

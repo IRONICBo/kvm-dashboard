@@ -3,6 +3,7 @@ package agent
 import (
 	"kvm-dashboard/utils"
 	"testing"
+	"time"
 )
 
 func TestPerfAgent(t *testing.T) {
@@ -16,8 +17,8 @@ func TestPerfAgent(t *testing.T) {
 		},
 	}
 
-	utils.LogWithInfo("Start perf agent")
+	utils.Log.Info("Start perf agent")
 
 	perfAgent.Start()
-	// time.Sleep(10000000 * time.Second)
+	time.Sleep(5 * time.Second)
 }

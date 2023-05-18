@@ -40,7 +40,7 @@ func (pa *PerfAgent) Start() {
 	// defer client.Close()
 
 	if err != nil {
-		utils.LogWithError(fmt.Sprintf("Can not connect to vm: %#v", pa.AgentInfo), err)
+		utils.Log.Error(fmt.Sprintf("Can not connect to vm: %#v", pa.AgentInfo), err)
 		return
 	}
 
@@ -49,21 +49,21 @@ func (pa *PerfAgent) Start() {
 	// cmd, err := client.Command("perf", "stat", "-I 5000", "-x \"|\"", "-e", "branch-misses")
 	cmd, err := client.Command("perf", "stat", "-I 1000", "-x \"|\"", "-e", data.PerfEvents)
 	if err != nil {
-		utils.LogWithError(fmt.Sprintf("Can not run perf on vm: %#v", pa.AgentInfo), err)
+		utils.Log.Error(fmt.Sprintf("Can not run perf on vm: %#v", pa.AgentInfo), err)
 		return
 	}
 
-	// utils.LogWithInfo(cmd.)
+	// utils.Log.Info(cmd.)
 
 	// commmand runs forever, so need pipe out
 	stdout, err := cmd.StderrPipe()
 	if err != nil {
-		utils.LogWithError(fmt.Sprintf("Can not get output of perf on vm: %#v", pa.AgentInfo), err)
+		utils.Log.Error(fmt.Sprintf("Can not get output of perf on vm: %#v", pa.AgentInfo), err)
 		return
 	}
 	err = cmd.Start()
 	if err != nil {
-		utils.LogWithError(fmt.Sprintf("Can not run perf on vm: %#v", pa.AgentInfo), err)
+		utils.Log.Error(fmt.Sprintf("Can not run perf on vm: %#v", pa.AgentInfo), err)
 		return
 	}
 
@@ -73,7 +73,7 @@ func (pa *PerfAgent) Start() {
 
 		for scanner.Scan() {
 			line := scanner.Text()
-			utils.LogWithInfo(line)
+			utils.Log.Info(line)
 			// dstatData := utils.ParseDstatData(line)
 			// da.DstatData <- dstatData
 		}

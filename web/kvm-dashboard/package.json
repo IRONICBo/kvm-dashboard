@@ -16,7 +16,7 @@
     "font-awesome": "^4.7.0",
     "less": "^3.13.1",
     "less-loader": "^7.3.0",
-    "vue": "^3.2.13",
+    "vue": "^3.2.26",
     "vue-router": "^4.1.6",
     "websocket-heartbeat-js": "^1.1.2",
     "yarn": "^1.22.19"

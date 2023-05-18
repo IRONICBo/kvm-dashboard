@@ -29,11 +29,21 @@ func WebRouter(r *gin.Engine) {
 	VmInfo := kvm_dashboard_api.Group("/vm")
 	{
 		VmInfo.GET("/basic", api.GetVmBasicInfo)
+
+		Control := VmInfo.Group("/control")
+		{
+			Control.GET("/start/ws", api.StartVM)
+			Control.GET("/stop/ws", api.StopVM)
+			Control.GET("/suspend/ws", api.SuspendVM)
+			Control.GET("/resume/ws", api.ResumeVM)
+		}
+
 		Graph := VmInfo.Group("/graph")
 		{
 			Graph.GET("/workload/history", api.GetVmWorkloadHistoryStats)
 			Graph.GET("/workload/realtime/ws", api.GetVmWorkloadRealtimeStats)
 		}
+
 		Table := VmInfo.Group("/table")
 		{
 			Table.GET("/process/realtime/ws", api.GetVmProcessRealtimeStats)
@@ -42,4 +52,5 @@ func WebRouter(r *gin.Engine) {
 			Table.GET("/alert/realtime/ws", api.GetVmAlertRealtimeAlertInfo)
 		}
 	}
+
 }

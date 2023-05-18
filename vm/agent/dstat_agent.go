@@ -39,7 +39,7 @@ func (da *DstatAgent) Start() {
 	// defer client.Close()
 
 	if err != nil {
-		utils.LogWithError(fmt.Sprintf("Can not connect to vm: %#v", da.AgentInfo), err)
+		utils.Log.Error(fmt.Sprintf("Can not connect to vm: %#v", da.AgentInfo), err)
 		return
 	}
 
@@ -47,19 +47,19 @@ func (da *DstatAgent) Start() {
 	// cmd, err := client.Command("ls", "-a")
 	cmd, err := client.Command("dstat", data.DstatParam...)
 	if err != nil {
-		utils.LogWithError(fmt.Sprintf("Can not run dstat on vm: %#v", da.AgentInfo), err)
+		utils.Log.Error(fmt.Sprintf("Can not run dstat on vm: %#v", da.AgentInfo), err)
 		return
 	}
 
 	// commmand runs forever, so need pipe out
 	stdout, err := cmd.StdoutPipe()
 	if err != nil {
-		utils.LogWithError(fmt.Sprintf("Can not get output of dstat on vm: %#v", da.AgentInfo), err)
+		utils.Log.Error(fmt.Sprintf("Can not get output of dstat on vm: %#v", da.AgentInfo), err)
 		return
 	}
 	err = cmd.Start()
 	if err != nil {
-		utils.LogWithError(fmt.Sprintf("Can not run dstat on vm: %#v", da.AgentInfo), err)
+		utils.Log.Error(fmt.Sprintf("Can not run dstat on vm: %#v", da.AgentInfo), err)
 		return
 	}
 
@@ -69,7 +69,7 @@ func (da *DstatAgent) Start() {
 
 		for scanner.Scan() {
 			line := scanner.Text()
-			utils.LogWithInfo(line)
+			utils.Log.Info(line)
 			// dstatData := utils.ParseDstatData(line)
 			// da.DstatData <- dstatData
 		}
