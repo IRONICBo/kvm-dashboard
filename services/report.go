@@ -78,8 +78,9 @@ func (svc *Service) saveAndReportVMData(agent *agent.LibvirtAgent, uuid string) 
 	}
 }
 
+// todo: delete url param
 func (svc *Service) StopReport(url, uuid string) error {
-	err := agent.Stop(uuid)
+	err := agent.StopLibvirtAgent(uuid)
 	if err != nil {
 		utils.Log.Error("Can not stop agent", err)
 		return err

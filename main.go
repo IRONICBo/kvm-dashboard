@@ -30,6 +30,7 @@ func main() {
 
 	// ws hook
 	ws.NewControlWSServer()
+	ws.NewProcessWSServer()
 
 	r.Run(config.AppConf.Host + ":" + config.AppConf.Port)
 }

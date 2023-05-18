@@ -10,6 +10,7 @@ type VMInfo struct {
 	MaxMem       string `json:"max_mem"`
 	IsPersistent bool   `json:"is_persistent"`
 	AutoStart    bool   `json:"auto_start"`
+	IpAddress    string `json:"ip_address"`
 }
 
 type HostInfo struct {

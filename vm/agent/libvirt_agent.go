@@ -53,6 +53,10 @@ func NewLibvirtAgent(url string) (*LibvirtAgent, error) {
 	return agent, nil
 }
 
+func GetVMIpAddress() {
+
+}
+
 // Init VM utils
 // todo: use console to setup vm network and install essential packages
 func (la *LibvirtAgent) VmSetUp(uuid, username, password string) error {
@@ -202,7 +206,7 @@ func (la *LibvirtAgent) Start(uuid string) {
 				la.LibvirtData <- libvirtData // send data
 
 				// delay
-				time.Sleep(time.Duration(consts.VM_DATA_REALTIME_INTERVAL_INTERVAL) * time.Second)
+				time.Sleep(time.Duration(consts.VM_DATA_REALTIME_INTERVAL) * time.Second)
 			}
 		}
 	}()
@@ -214,8 +218,8 @@ func (la *LibvirtAgent) Stop() {
 }
 
 // Stop StartedLibvirtAgents
-func Stop(uuid string) error {
-	utils.Log.Info(fmt.Sprintf("Stop collect data: %#v", StartedLibvirtAgents))
+func StopLibvirtAgent(uuid string) error {
+	utils.Log.Debug(fmt.Sprintf("Stop collect data: %#v", StartedLibvirtAgents))
 
 	agent, ok := StartedLibvirtAgents[uuid]
 	if !ok {
@@ -292,6 +296,25 @@ func (la *LibvirtAgent) GetVMInfo(uuid string) (*data.VMInfo, error) {
 		utils.Log.Error(fmt.Sprintf("Can not get autoStart: %#v", uuid), err)
 	}
 
+	// get ip address
+	ifaces, err := dom.ListAllInterfaceAddresses(libvirt.DOMAIN_INTERFACE_ADDRESSES_SRC_AGENT)
+	if err != nil {
+		utils.Log.Error(fmt.Sprintf("Can not get ifaces: %#v", uuid), err)
+		return nil, err
+	}
+
+	ipAddress := ""
+	for _, iface := range ifaces {
+		if len(iface.Addrs) > 0 && iface.Name == consts.INTERFACE_NAME {
+			// ipAddress = iface.Addrs
+			for _, addr := range iface.Addrs {
+				if addr.Type == libvirt.IP_ADDR_TYPE_IPV4 {
+					ipAddress = addr.Addr
+				}
+			}
+		}
+	}
+
 	vmInfo := &data.VMInfo{
 		Id:           id,
 		Name:         name,
@@ -302,6 +325,7 @@ func (la *LibvirtAgent) GetVMInfo(uuid string) (*data.VMInfo, error) {
 		MaxMem:       maxMem,
 		IsPersistent: isPersistent,
 		AutoStart:    autoStart,
+		IpAddress:    ipAddress,
 	}
 
 	return vmInfo, err

@@ -101,8 +101,18 @@ func stopVM(uuid string) {
 		ws.ControlWSServer.CloseSession(uuid)
 		return
 	}
+	state = model.NewProgressJson(uuid, 70, "Stop Report successfully ", true)
+	ws.ControlWSServer.WriteData(uuid, state)
 
-	state = model.NewProgressJson(uuid, 100, "Stop Report successfully ", true)
+	err = svc.StopProcessInfo(uuid)
+	if err != nil {
+		utils.Log.Error("Can not stop process info", err)
+		state = model.NewProgressJson(uuid, 100, err.Error(), false)
+		ws.ControlWSServer.WriteData(uuid, state)
+		ws.ControlWSServer.CloseSession(uuid)
+		return
+	}
+	state = model.NewProgressJson(uuid, 100, "Stop process info successfully ", true)
 	ws.ControlWSServer.WriteData(uuid, state)
 
 	ws.ControlWSServer.CloseSession(uuid)

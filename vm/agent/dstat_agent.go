@@ -26,7 +26,6 @@ func NewDstatAgent(agentInfo *AgentInfo) *DstatAgent {
 
 func (da *DstatAgent) Start() {
 	// connect to vm
-	// todo: Port is not used in goph
 	// client, err := goph.New(da.AgentInfo.User, da.AgentInfo.Ip, goph.Password(da.AgentInfo.Password))
 	client, err := goph.NewConn(
 		&goph.Config{

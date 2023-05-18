@@ -3,6 +3,9 @@ package consts
 const (
 	LIBVIRT_URL    = "qemu:///system"
 	INTERFACE_NAME = "enp1s0"
+	USERNAME       = "root"
+	PASSWORD       = "123123"
+	PORT           = 22
 )
 
 const (
@@ -10,10 +13,10 @@ const (
 	VM_DATA_NEARLY_HOUR = "vm_data_nearly_hour" // nearly one hour data
 	VM_DATA_NEARLY_DAY  = "vm_data_nearly_day"  // nearly one day data
 
-	VISION_COUNT                       = 20                                                          // 20 point for echarts
-	VM_DATA_REALTIME_INTERVAL_INTERVAL = 3                                                           // 3 second
-	VM_DATA_NEARLY_5M_INTERVAL         = 5 * 60 / VISION_COUNT / VM_DATA_REALTIME_INTERVAL_INTERVAL  // 5 second
-	VM_DATA_NEARLY_1H_INTERVAL         = 60 * 60 / VISION_COUNT / VM_DATA_REALTIME_INTERVAL_INTERVAL // 60 second
+	VISION_COUNT               = 20                                                 // 20 point for echarts
+	VM_DATA_REALTIME_INTERVAL  = 3                                                  // 3 second
+	VM_DATA_NEARLY_5M_INTERVAL = 5 * 60 / VISION_COUNT / VM_DATA_REALTIME_INTERVAL  // 5 second
+	VM_DATA_NEARLY_1H_INTERVAL = 60 * 60 / VISION_COUNT / VM_DATA_REALTIME_INTERVAL // 60 second
 )
 
 const (

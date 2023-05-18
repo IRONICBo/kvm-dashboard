@@ -7,23 +7,23 @@ import (
 	"github.com/olahol/melody"
 )
 
-var ControlWSServer *WSServer
+var ProcessWSServer *WSServer
 
-func NewControlWSServer() {
+func NewProcessWSServer() {
 	m := melody.New()
 	m.Upgrader.CheckOrigin = func(r *http.Request) bool { return true }
 
-	ControlWSServer = &WSServer{
+	ProcessWSServer = &WSServer{
 		server:  m,
 		sessMap: make(map[string]*melody.Session),
 	}
 
 	// hook
-	ControlWSServer.server.HandleConnect(ControlWSServer.HandleControlConnect)
-	ControlWSServer.server.HandleClose(ControlWSServer.HandleControlClose)
+	ProcessWSServer.server.HandleConnect(ProcessWSServer.HandleProcessConnect)
+	ProcessWSServer.server.HandleClose(ProcessWSServer.HandleProcessClose)
 }
 
-func (ws *WSServer) HandleControlRequest(w http.ResponseWriter, r *http.Request) error {
+func (ws *WSServer) HandleProcessRequest(w http.ResponseWriter, r *http.Request) error {
 	err := ws.server.HandleRequest(w, r)
 	if err != nil {
 		utils.Log.Error("Can not handle request", err)
@@ -33,13 +33,13 @@ func (ws *WSServer) HandleControlRequest(w http.ResponseWriter, r *http.Request)
 	return nil
 }
 
-func (ws *WSServer) HandleControlConnect(s *melody.Session) {
+func (ws *WSServer) HandleProcessConnect(s *melody.Session) {
 	uuid := s.Request.URL.Query().Get("UUID")
 
 	ws.sessMap[uuid] = s
 }
 
-func (ws *WSServer) HandleControlClose(s *melody.Session, msg int, reason string) error {
+func (ws *WSServer) HandleProcessClose(s *melody.Session, msg int, reason string) error {
 	uuid := s.Request.URL.Query().Get("UUID")
 
 	delete(ws.sessMap, uuid)

@@ -83,6 +83,7 @@ func (svc *Service) GetVMInfo(uuid string) *model.VMInfo {
 	vmInfo.CPU = info.CPU
 	vmInfo.IsPersistent = info.IsPersistent
 	vmInfo.AutoStart = info.AutoStart
+	vmInfo.IpAddress = info.IpAddress
 
 	maxMem := strconv.Itoa(int(info.MaxMem/1024/1024)) + "GB"
 	vmInfo.MaxMem = maxMem

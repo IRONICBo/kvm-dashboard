@@ -13,6 +13,8 @@ type VMInfo struct {
 	MaxMem       uint64 `json:"max_mem"`
 	IsPersistent bool   `json:"is_persistent"`
 	AutoStart    bool   `json:"auto_start"`
+
+	IpAddress string `json:"ip_address"`
 }
 
 // VM collected data

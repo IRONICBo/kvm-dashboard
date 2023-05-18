@@ -1,6 +1,7 @@
 package ws
 
 import (
+	"errors"
 	"net/http"
 
 	"github.com/olahol/melody"
@@ -19,4 +20,26 @@ func NewWSServer() *WSServer {
 		server:  m,
 		sessMap: make(map[string]*melody.Session),
 	}
+}
+
+func (ws *WSServer) WriteData(uuid string, data string) error {
+	sess, ok := ws.sessMap[uuid]
+	if !ok {
+		return errors.New("can not find session")
+	}
+
+	sess.Write([]byte(data))
+
+	return nil
+}
+
+func (ws *WSServer) CloseSession(uuid string) error {
+	sess, ok := ws.sessMap[uuid]
+	if !ok {
+		return errors.New("can not find session")
+	}
+
+	sess.Close()
+
+	return nil
 }
