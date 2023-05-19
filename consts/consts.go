@@ -32,8 +32,17 @@ const (
 	AGG_MEDIAN = "median"
 )
 
+const (
+	// measurement
+	VM_MEASUREMENT     = "vm"
+	SIMPLE_MEASUREMENT = "simple"
+)
+
 // Unit
 var (
 	// todo: add index unit
 	UNIT = map[string]string{}
 )
+
+// Realtime data
+var ()

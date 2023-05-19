@@ -40,8 +40,8 @@ func (svc *Service) GetVMData(uuid, period, agg string, fields []string) []*mode
 	return res
 }
 
-// Start agent and report data
-func (svc *Service) StartReport(url, uuid string) error {
+// Start agent and report VM data
+func (svc *Service) StartVMReport(url, uuid string) error {
 	libvirtAgent, err := agent.NewLibvirtAgent(url)
 	if err != nil {
 		utils.Log.Error("Can not create libvirt agent", err)
@@ -79,7 +79,7 @@ func (svc *Service) saveAndReportVMData(agent *agent.LibvirtAgent, uuid string) 
 }
 
 // todo: delete url param
-func (svc *Service) StopReport(url, uuid string) error {
+func (svc *Service) StopVMReport(url, uuid string) error {
 	err := agent.StopLibvirtAgent(uuid)
 	if err != nil {
 		utils.Log.Error("Can not stop agent", err)

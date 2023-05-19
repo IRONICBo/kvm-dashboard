@@ -2,6 +2,8 @@ package dao
 
 import (
 	"errors"
+	"fmt"
+	"kvm-dashboard/consts"
 
 	influxdb2 "github.com/influxdata/influxdb-client-go/v2"
 	"github.com/influxdata/influxdb-client-go/v2/api"
@@ -38,4 +40,42 @@ func Init(severURL, authToken, org, bucket string) error {
 
 func GetInfluxDBClient() *InfluxDB {
 	return client
+}
+
+func buildQuery(bucket, period, measurement, field, agg, uuid string,
+	count int) string {
+	switch period {
+	case consts.PERIOD_5M:
+		return fmt.Sprintf(`
+		from(bucket: "%s")
+		|> range(start: -%s)
+		|> filter(fn: (r) => r._measurement == "%s")
+		|> filter(fn: (r) => r._field == "%s")	
+		|> filter(fn: (r) => r.uuid == "%s")
+		|> aggregateWindow(every: %ds, fn: %s, createEmpty: false)
+		|> limit(n: %d)
+		|> yield(name: "results")`, bucket, period, measurement,
+			field, uuid, consts.VM_DATA_NEARLY_5M_INTERVAL, agg, count)
+	case consts.PERIOD_1H:
+		return fmt.Sprintf(`
+		from(bucket: "%s")
+		|> range(start: -%s)
+		|> filter(fn: (r) => r._measurement == "%s")
+		|> filter(fn: (r) => r._field == "%s")	
+		|> filter(fn: (r) => r.uuid == "%s")
+		|> aggregateWindow(every: %ds, fn: %s, createEmpty: false)
+		|> limit(n: %d)
+		|> yield(name: "results")`, bucket, period, measurement,
+			field, uuid, consts.VM_DATA_NEARLY_1H_INTERVAL, agg, count)
+	default: // 1m
+		return fmt.Sprintf(`
+			from(bucket: "%s")
+			|> range(start: -%s)
+			|> filter(fn: (r) => r._measurement == "%s")
+			|> filter(fn: (r) => r._field == "%s")	
+			|> filter(fn: (r) => r.uuid == "%s")	
+			|> limit(n: %d)
+			|> yield(name: "results")`, bucket, period, measurement,
+			field, uuid, count)
+	}
 }

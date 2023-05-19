@@ -21,7 +21,7 @@ func (i *InfluxDB) WriteVMData(vmData *data.LibvirtData, tags map[string]string)
 	vmFields_flattened := utils.FlattenMap(vmFields, ".")
 
 	vmPoint := influxdb2.NewPoint(
-		"vm",
+		consts.VM_MEASUREMENT,
 		tags,
 		vmFields_flattened,
 		time.Now(), // set timezone
@@ -32,7 +32,7 @@ func (i *InfluxDB) WriteVMData(vmData *data.LibvirtData, tags map[string]string)
 
 func (i *InfluxDB) ReadVMData(uuid, field, period, agg string) *model.Metric {
 	bucket := i.Bucket
-	measurement := "vm"
+	measurement := consts.VM_MEASUREMENT
 	count := consts.VISION_COUNT
 	metric := &model.Metric{}
 
@@ -59,44 +59,6 @@ func (i *InfluxDB) ReadVMData(uuid, field, period, agg string) *model.Metric {
 	metric.Timestamp = timeList
 
 	return metric
-}
-
-func buildQuery(bucket, period, measurement, field, agg, uuid string,
-	count int) string {
-	switch period {
-	case consts.PERIOD_5M:
-		return fmt.Sprintf(`
-		from(bucket: "%s")
-		|> range(start: -%s)
-		|> filter(fn: (r) => r._measurement == "%s")
-		|> filter(fn: (r) => r._field == "%s")	
-		|> filter(fn: (r) => r.uuid == "%s")
-		|> aggregateWindow(every: %ds, fn: %s, createEmpty: false)
-		|> limit(n: %d)
-		|> yield(name: "results")`, bucket, period, measurement,
-			field, uuid, consts.VM_DATA_NEARLY_5M_INTERVAL, agg, count)
-	case consts.PERIOD_1H:
-		return fmt.Sprintf(`
-		from(bucket: "%s")
-		|> range(start: -%s)
-		|> filter(fn: (r) => r._measurement == "%s")
-		|> filter(fn: (r) => r._field == "%s")	
-		|> filter(fn: (r) => r.uuid == "%s")
-		|> aggregateWindow(every: %ds, fn: %s, createEmpty: false)
-		|> limit(n: %d)
-		|> yield(name: "results")`, bucket, period, measurement,
-			field, uuid, consts.VM_DATA_NEARLY_1H_INTERVAL, agg, count)
-	default: // 1m
-		return fmt.Sprintf(`
-			from(bucket: "%s")
-			|> range(start: -%s)
-			|> filter(fn: (r) => r._measurement == "%s")
-			|> filter(fn: (r) => r._field == "%s")	
-			|> filter(fn: (r) => r.uuid == "%s")	
-			|> limit(n: %d)
-			|> yield(name: "results")`, bucket, period, measurement,
-			field, uuid, count)
-	}
 }
 
 // deprecated

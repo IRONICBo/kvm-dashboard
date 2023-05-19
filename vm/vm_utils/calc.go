@@ -175,13 +175,13 @@ func parseDiskSize(size string) (float64, error) {
 
 func ParseNetLoad(prev, current, bandwith string, interval int) (float64, float64, error) {
 	prevRx, prevTx, err := parseNetstat(prev)
-	utils.Log.Info(fmt.Sprintf("prevRx: %#v prevTx: %#v", prevRx, prevTx))
+	// utils.Log.Info(fmt.Sprintf("prevRx: %#v prevTx: %#v", prevRx, prevTx))
 	if err != nil {
 		utils.Log.Error("Can not parse net stats", err)
 		return 0, 0, err
 	}
 	currRx, currTx, err := parseNetstat(current)
-	utils.Log.Info(fmt.Sprintf("currRx: %#v currTx: %#v", currRx, currTx))
+	// utils.Log.Info(fmt.Sprintf("currRx: %#v currTx: %#v", currRx, currTx))
 	if err != nil {
 		utils.Log.Error("Can not parse net stats", err)
 		return 0, 0, err

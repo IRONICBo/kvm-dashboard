@@ -47,10 +47,10 @@ func InitConf() *Config {
 			Mode:    viper.GetString("app.mode"),
 		},
 		InfluxDBConf: InfluxDBConf{
-			URL:    viper.GetString("influxdb.url"),
-			Token:  viper.GetString("influxdb.token"),
-			Org:    viper.GetString("influxdb.org"),
-			Bucket: viper.GetString("influxdb.bucket"),
+			URL:    viper.GetString("database.influxdb.url"),
+			Token:  viper.GetString("database.influxdb.token"),
+			Org:    viper.GetString("database.influxdb.org"),
+			Bucket: viper.GetString("database.influxdb.bucket"),
 		},
 	}
 

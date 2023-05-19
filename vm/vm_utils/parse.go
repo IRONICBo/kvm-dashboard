@@ -42,7 +42,8 @@ func ParseTopData(out string) []*data.ProcessData {
 			processes = append(processes, process)
 		}
 
-		if index >= 20+7 {
+		// index start from 0 => 7
+		if index >= 20 {
 			break
 		}
 	}

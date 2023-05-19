@@ -10,7 +10,7 @@ import (
 	"time"
 )
 
-func (svc *Service) GetProcessInfo(uuid string) error {
+func (svc *Service) StartProcessReport(uuid string) error {
 	// get ip address
 	vminfo := svc.GetVMInfo(uuid)
 
@@ -56,13 +56,16 @@ func (svc *Service) reportProcessData(agent *agent.ProcessAgent, uuid string) {
 			processJson := string(processJsonByte)
 
 			// write to ws
-			ws.ProcessWSServer.WriteData(uuid, processJson)
+			err = ws.ProcessWSServer.WriteData(uuid, processJson)
+			if err != nil {
+				utils.Log.Error("Can not write process data to ws", err)
+			}
 		}
 	}
 
 }
 
-func (svc *Service) StopProcessInfo(uuid string) error {
+func (svc *Service) StopProcessReport(uuid string) error {
 	err := agent.StopProcessAgent(uuid)
 	if err != nil {
 		utils.Log.Error("Can not stop agent", err)

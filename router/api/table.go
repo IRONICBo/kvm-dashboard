@@ -31,7 +31,7 @@ func GetVmProcessRealtimeStats(c *gin.Context) {
 	}
 
 	svc := services.NewService()
-	go svc.GetProcessInfo(param.UUID)
+	go svc.StartProcessReport(param.UUID)
 
 	err = ws.ProcessWSServer.HandleControlRequest(c.Writer, c.Request)
 	if err != nil {

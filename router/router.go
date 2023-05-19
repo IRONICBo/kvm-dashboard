@@ -36,6 +36,8 @@ func WebRouter(r *gin.Engine) {
 			Control.GET("/stop/ws", api.StopVM)
 			Control.GET("/suspend/ws", api.SuspendVM)
 			Control.GET("/resume/ws", api.ResumeVM)
+			Control.GET("/start_report/ws", api.StartReport)
+			Control.GET("/stop_report/ws", api.StopReport)
 		}
 
 		Graph := VmInfo.Group("/graph")

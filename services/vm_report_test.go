@@ -8,7 +8,7 @@ import (
 	"time"
 )
 
-func TestStartReport(t *testing.T) {
+func TestStartVMReport(t *testing.T) {
 	// Init influxdb
 	err := dao.Init(
 		"http://127.0.0.1:8086",
@@ -20,7 +20,7 @@ func TestStartReport(t *testing.T) {
 	}
 
 	svc := NewService()
-	svc.StartReport("qemu:///system", "a5c655a8-589a-4524-b338-fa9b947a334d")
+	svc.StartVMReport("qemu:///system", "a5c655a8-589a-4524-b338-fa9b947a334d")
 
 	time.Sleep(60 * time.Second)
 }
