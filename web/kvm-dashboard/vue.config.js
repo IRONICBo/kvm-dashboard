@@ -5,13 +5,20 @@ module.exports = defineConfig({
     host: '127.0.0.1',
     port: 8080,
     proxy: {
-      '/api': {
-        target: 'http://127.0.0.1:8089/api2',
-        pathRewrite: { '^/api': '' },
+      '/golang_web': {
+        target: 'http://127.0.0.1:5001/',
         changeOrigin: true,
         pathRewrite: {
-          '^/api': '' // delete /api path
+          '^/golang_web': '/' // delete /api path
         }
+      },
+      // '/golang_ws': {
+      //   target: 'http://127.0.0.1:5001/',
+      //   ws: true, // proxy websockets
+      //   changeOrigin: true,
+        // pathRewrite: {
+        //   '^/golang_ws': '/' // delete /api path
+        // }
       }
     }
   },

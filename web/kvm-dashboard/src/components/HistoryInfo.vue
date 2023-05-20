@@ -94,7 +94,6 @@ export default {
           let data = option.series[0].data;
           let xAxisData = option.xAxis[0].data;
 
-          console.log(xAxisData)
 
           let now = new Date();
           let time = now.getHours() + ':' + now.getMinutes() + ':' + now.getSeconds();
@@ -124,7 +123,6 @@ export default {
           let data = option.series[0].data;
           let xAxisData = option.xAxis[0].data;
 
-          console.log(xAxisData)
 
           let now = new Date();
           let time = now.getHours() + ':' + now.getMinutes() + ':' + now.getSeconds();
@@ -154,7 +152,6 @@ export default {
           let data = option.series[0].data;
           let xAxisData = option.xAxis[0].data;
 
-          console.log(xAxisData)
 
           let now = new Date();
           let time = now.getHours() + ':' + now.getMinutes() + ':' + now.getSeconds();
@@ -184,7 +181,6 @@ export default {
           let data = option.series[0].data;
           let xAxisData = option.xAxis[0].data;
 
-          console.log(xAxisData)
 
           let now = new Date();
           let time = now.getHours() + ':' + now.getMinutes() + ':' + now.getSeconds();
@@ -214,7 +210,6 @@ export default {
           let data = option.series[0].data;
           let xAxisData = option.xAxis[0].data;
 
-          console.log(xAxisData)
 
           let now = new Date();
           let time = now.getHours() + ':' + now.getMinutes() + ':' + now.getSeconds();

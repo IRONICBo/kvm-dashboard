@@ -4,7 +4,6 @@ import (
 	"kvm-dashboard/model"
 	"kvm-dashboard/router/param"
 	"kvm-dashboard/router/ws"
-	"kvm-dashboard/services"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -30,8 +29,9 @@ func GetVmProcessRealtimeStats(c *gin.Context) {
 		return
 	}
 
-	svc := services.NewService()
-	go svc.StartProcessReport(param.UUID)
+	// fix start multi process
+	// svc := services.NewService()
+	// go svc.StartProcessReport(param.UUID)
 
 	err = ws.ProcessWSServer.HandleControlRequest(c.Writer, c.Request)
 	if err != nil {

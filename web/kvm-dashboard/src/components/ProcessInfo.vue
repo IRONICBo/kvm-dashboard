@@ -5,41 +5,80 @@
           <span>Process Workload</span>
         </div>
       </template>
-      <el-table :data="tableData" style="width: 100%">
-        <el-table-column prop="pid" label="PID" width="180" />
-        <el-table-column prop="command" label="COMMAND" width="180" />
-        <el-table-column prop="cpu" label="%CPU" width="180" />
-        <el-table-column prop="th" label="#TH" width="180" />
-        <el-table-column prop="wq" label="#WQ" width="180" />
-        <el-table-column prop="ports" label="#PORTS" width="180" />
-        <el-table-column prop="mem" label="#MEM" width="180" />
+      <el-table align="center" :data="processData" style="width: 100%" max-height="300px">
+        <el-table-column fixed prop="command" label="COMMAND" width="180" />
+        <el-table-column prop="pid" sortable label="PID" width="100"  />
+        <el-table-column prop="user" sortable label="USER" width="100" />
+        <el-table-column prop="pr" sortable label="PR" width="100" />
+        <el-table-column prop="ni" sortable label="NI" width="100" />
+        <el-table-column prop="virt" sortable label="VIRT" width="100" />
+        <el-table-column prop="res" sortable label="RES" width="100" />
+        <el-table-column prop="shr" sortable label="SHR" width="100" />
+        <el-table-column prop="s" sortable label="S" width="100" />
+        <el-table-column prop="cpu" sortable label="CPU" width="100" />
+        <el-table-column prop="mem" sortable label="MEM" width="100" />
+        <el-table-column prop="time" sortable label="TIME" width="100" />
       </el-table>
     </el-card>
 </template>
   
 <script>
-const tableData = [
-  {
-    date: '2016-05-03',
-    name: 'Tom',
-    address: 'No. 189, Grove St, Los Angeles',
+import {ProcessWebSocket} from '@/api/realtime';
+import {TEMPINFO} from '@/constant/constant';
+
+export default {
+  props: {
+
   },
-  {
-    date: '2016-05-02',
-    name: 'Tom',
-    address: 'No. 189, Grove St, Los Angeles',
+  data() {
+    return {
+      ws: null,
+      processData: [],
+    }
   },
-  {
-    date: '2016-05-04',
-    name: 'Tom',
-    address: 'No. 189, Grove St, Los Angeles',
+  mounted() {
+        this.initWebSocket();
   },
-  {
-    date: '2016-05-01',
-    name: 'Tom',
-    address: 'No. 189, Grove St, Los Angeles',
+  unmounted() {
+      // if the ws is null, can not use close method.
+      if (this.ws) {
+          this.ws.close();
+      }
   },
-]
+  methods: {
+    // ws
+    initWebSocket() {
+        if (typeof WebSocket === 'undefined') {
+            return console.log('Your browser doesn\'t support WebSocket');
+        }
+        this.ws = ProcessWebSocket(TEMPINFO.uuid);
+        this.ws.onmessage = this.handleMessage;
+        this.ws.onopen = this.handleOpen;
+        this.ws.onclose = this.handleClose;
+        this.ws.onerror = this.handleError;
+    },
+    handleMessage(data) {
+        let processResp = JSON.parse(data.data);
+        console.log("handleMessage", processResp)
+
+        this.processData = processResp;
+    },
+    handleOpen() {
+        console.log('handleOpen');
+    },
+    handleClose() {
+        console.log('handleClose');
+    },
+    handleError() {
+        // reconnect
+        this.initWebSocket();
+        console.log('handleError');
+    },
+    handleSend(data) {
+        this.ws.send(data);
+    }
+  }
+}
 </script>
   
 <style scoped>

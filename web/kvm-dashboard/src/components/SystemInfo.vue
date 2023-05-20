@@ -9,12 +9,16 @@
         <el-col :span="18">
           <el-descriptions :column="6">
             <!-- Use for each -->
-            <el-descriptions-item label="STATUS">STARTED</el-descriptions-item>
-            <el-descriptions-item label="OS">Kirin V10</el-descriptions-item>
-            <el-descriptions-item label="CPU">Phytium D2000+</el-descriptions-item>
-            <el-descriptions-item label="Mem">8012 MB</el-descriptions-item>
-            <el-descriptions-item label="Disk">1000 GB</el-descriptions-item>
-            <el-descriptions-item label="Net">1Mb/s</el-descriptions-item>
+            <el-descriptions-item label="ID">{{ vmInfo.id }}</el-descriptions-item>
+            <el-descriptions-item label="Name">{{ vmInfo.name }}</el-descriptions-item>
+            <el-descriptions-item label="State">{{ vmInfo.state }}</el-descriptions-item>
+            <el-descriptions-item label="CPU">{{ vmInfo.cpu }}</el-descriptions-item>
+            <el-descriptions-item label="MaxMem">{{ vmInfo.max_mem }}</el-descriptions-item>
+            <el-descriptions-item label="IPAddress">{{ vmInfo.ip_address }}</el-descriptions-item>
+            <el-descriptions-item label="OSType">{{ vmInfo.os_type }}</el-descriptions-item>
+            <el-descriptions-item label="IsPersistent">{{ vmInfo.is_persistent }}</el-descriptions-item>
+            <el-descriptions-item label="AutoStart">{{ vmInfo.auto_start }}</el-descriptions-item>
+            <el-descriptions-item label="UUID">{{ vmInfo.uuid }}</el-descriptions-item>
           </el-descriptions>
         </el-col>
         <el-col :span="6">
@@ -33,8 +37,45 @@ import VmRestart from '@/assets/icons/VmRestart';
 import VmStart from '@/assets/icons/VmStart';
 import VmStop from '@/assets/icons/VmStop';
 
+import {getVMInfo} from '@/api/info';
+import {TEMPINFO} from '@/constant/constant';
 
 export default {
+    data() {
+        return {
+            hostInfo: {},
+            vmInfo: {
+              "id": "",
+              "name": "",
+              "uuid": "",
+              "os_type": "",
+              "state": "",
+              "cpu": "",
+              "max_mem": "",
+              "is_persistent": "",
+              "auto_start": "",
+              "ip_address": "",
+            },
+        }
+    },
+    props: {
+        UUID: "",
+    },
+    mounted() {
+      this.fetchVMInfo();
+    },
+    methods: {
+      fetchVMInfo() {
+        getVMInfo(TEMPINFO.uuid)
+        .then(response => {
+            this.vmInfo = response.data;
+            // render
+        })
+        .catch(error => {
+            console.log(error);
+        });
+      }
+    },
     components: {
         VmStart,
         VmStop,
