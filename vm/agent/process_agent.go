@@ -82,8 +82,7 @@ func (pa *ProcessAgent) Start(uuid string) {
 					return
 				}
 				processData := vm_utils.ParseTopData(topInfo)
-				utils.Log.Error("...................")
-				// utils.Log.Info(fmt.Sprintf("Process data: %#v", processData))
+				utils.Log.Info(fmt.Sprintf("Process data: %#v", processData))
 				pa.ProcessData <- processData
 
 			}

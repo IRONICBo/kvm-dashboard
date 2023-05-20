@@ -19,7 +19,7 @@ module.exports = defineConfig({
         // pathRewrite: {
         //   '^/golang_ws': '/' // delete /api path
         // }
-      }
+      // }
     }
   },
   transpileDependencies: true,

@@ -59,8 +59,7 @@ export default {
     },
     handleMessage(data) {
         let processResp = JSON.parse(data.data);
-        console.log("handleMessage", processResp)
-
+        // console.log("handleMessage", processResp)
         this.processData = processResp;
     },
     handleOpen() {

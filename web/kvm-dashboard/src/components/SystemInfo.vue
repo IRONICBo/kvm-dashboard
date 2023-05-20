@@ -22,10 +22,18 @@
           </el-descriptions>
         </el-col>
         <el-col :span="6">
-          <el-button type="primary"><el-icon><VmStart /></el-icon></el-button>
-          <el-button type="primary"><el-icon><VmStop /></el-icon></el-button>
-          <el-button type="primary"><el-icon><VmPause /></el-icon></el-button>
-          <el-button type="primary"><el-icon><VmRestart /></el-icon></el-button>
+          <el-row justify="space-between">
+            <el-col :span="6"><el-button @click="vmStart" type="primary"><el-icon><VmStart /></el-icon></el-button></el-col>
+            <el-col :span="6"><el-button @click="vmStop" type="primary"><el-icon><VmStop /></el-icon></el-button></el-col>
+            <el-col :span="6"><el-button @click="vmPause" type="primary"><el-icon><VmPause /></el-icon></el-button></el-col>
+            <el-col :span="6"><el-button @click="vmRestart" type="primary"><el-icon><VmRestart /></el-icon></el-button></el-col>
+          </el-row>
+          <div v-show="controlVis">
+            <el-progress :percentage="controlStatus.percent" striped striped-flow />
+            <el-descriptions :column="1">
+              <el-descriptions-item label="MSG">{{ controlStatus.msg }}</el-descriptions-item>
+            </el-descriptions>
+          </div>
         </el-col>
       </el-row>
     </el-card>
@@ -37,8 +45,11 @@ import VmRestart from '@/assets/icons/VmRestart';
 import VmStart from '@/assets/icons/VmStart';
 import VmStop from '@/assets/icons/VmStop';
 
-import {getVMInfo} from '@/api/info';
-import {TEMPINFO} from '@/constant/constant';
+import { getVMInfo } from '@/api/info';
+import { TEMPINFO } from '@/constant/constant';
+import { StartWebSocket, StopWebSocket, SuspendWebSocket, ResumeWebSocket } from '@/api/control';
+
+import { ElNotification,ElProgress } from 'element-plus';
 
 export default {
     data() {
@@ -55,6 +66,13 @@ export default {
               "is_persistent": "",
               "auto_start": "",
               "ip_address": "",
+            },
+            controlVis: false,
+            controlStatus: {
+              "uuid": "",
+              "percent": 0,
+              "msg": "",
+              "state": null,
             },
         }
     },
@@ -74,6 +92,78 @@ export default {
         .catch(error => {
             console.log(error);
         });
+      },
+      vmStart() {
+        this.initWebSocket(StartWebSocket);
+      },
+      vmStop() {
+        this.initWebSocket(StopWebSocket);
+      },
+      vmPause() {
+        this.initWebSocket(SuspendWebSocket);
+      },
+      vmRestart() {
+        this.initWebSocket(ResumeWebSocket);
+      },
+      initWebSocket(socket) {
+        if (typeof WebSocket === 'undefined') {
+            return console.log('Your browser doesn\'t support WebSocket');
+        }
+        this.ws = socket(TEMPINFO.uuid);
+        this.ws.onmessage = this.handleMessage;
+        this.ws.onopen = this.handleOpen;
+        this.ws.onclose = this.handleClose;
+        this.ws.onerror = this.handleError;
+      },
+      handleMessage(data) {
+          // open progress bar
+          this.controlVis = true;
+
+          let controlResp = JSON.parse(data.data);
+          console.log("handleMessage", controlResp)
+          this.controlStatus = controlResp;
+
+          if (this.controlStatus.percent == 100 && this.controlStatus.state == true) {
+            ElNotification({
+              title: 'VM Status',
+              message: this.controlStatus.msg,
+              type: 'success',
+              duration: 3000
+            });
+
+            // close progress bar
+            setInterval(() => {
+              this.controlVis = false;
+            }, 3000);
+          }
+
+          if (this.controlStatus.percent == 100 && this.controlStatus.state == false) {
+            ElNotification({
+              title: 'VM Status',
+              message: this.controlStatus.msg,
+              type: 'error',
+              duration: 3000
+            });
+
+            // close progress bar
+            setInterval(() => {
+              this.controlVis = false;
+            }, 3000);
+          }
+      },
+      handleOpen() {
+          console.log('handleOpen');
+      },
+      handleClose() {
+          console.log('handleClose');
+      },
+      handleError() {
+          // reconnect
+          this.initWebSocket();
+          console.log('handleError');
+      },
+      handleSend(data) {
+          this.ws.send(data);
       }
     },
     components: {
@@ -86,10 +176,18 @@ export default {
 </script>
   
 <style scoped>
+
+.control_status {
+  /* height: 150px; */
+  display:flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .card-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: left;
+  display: flex;
+  justify-content: space-between;
+  align-items: left;
 }
 
 .text {

@@ -40,17 +40,24 @@ import {TEMPINFO} from '@/constant/constant';
   
 export default {
     props: {
+        realtimeInfo: {
+            cpu_usage: 0,
+            memory_usage: 0,
+            disk_usage: 0,
+            net_rx_rate: 0,
+            net_tx_rate: 0,
+        },
     },
     data() {
         return {
             ws: null,
-            realtimeInfo: {
-                cpu_usage: 0,
-                memory_usage: 0,
-                disk_usage: 0,
-                net_rx_rate: 0,
-                net_tx_rate: 0,
-            },
+            // realtimeInfo: {
+            //     cpu_usage: 0,
+            //     memory_usage: 0,
+            //     disk_usage: 0,
+            //     net_rx_rate: 0,
+            //     net_tx_rate: 0,
+            // },
             cpu_chart: null,
             memory_chart: null,
             disk_chart: null,
@@ -58,13 +65,13 @@ export default {
     },
     mounted() {
         this.initGraph();
-        this.initWebSocket();
+        // this.initWebSocket();
     },
     unmounted() {
         // if the ws is null, can not use close method.
-        if (this.ws) {
-            this.ws.close();
-        }
+        // if (this.ws) {
+        //     this.ws.close();
+        // }
     },
     methods: {
         initGraph() {
