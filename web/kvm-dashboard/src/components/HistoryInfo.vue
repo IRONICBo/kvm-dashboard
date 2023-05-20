@@ -39,15 +39,65 @@
 
 <script>
 import * as echarts from 'echarts';
+import {SimpleWebSocket} from '@/api/realtime';
+import {TEMPINFO} from '@/constant/constant';
+
 
 export default {
+  props: {
+    realtimeInfoWithTimestamp: {
+        "name": "",
+        "unit": "",
+        "data": [
+            {
+                "cpu_usage": 0,
+                "mem_usage": 0,
+                "disk_usage": 0,
+                "net_rx_rate": 0,
+                "net_tx_rate": 0
+            }
+        ],
+        "timestamp": [
+            0
+        ]
+    },
+  },
+  // props: ['realtimeInfoWithTimestamp'],
+  data() {
+    return {
+      cpu_chart: null,
+      memory_chart: null,
+      disk_chart: null,
+      rx_rate: null,
+      tx_rate: null,
+    }
+  },
   mounted() {
-      // load chart
-      const cpu_load = echarts.init(this.$refs.cpu_load);
-      const memory_load = echarts.init(this.$refs.memory_load);
-      const disk_load = echarts.init(this.$refs.disk_load);
-      const rx_rate = echarts.init(this.$refs.rx_rate);
-      const tx_rate = echarts.init(this.$refs.tx_rate);
+      this.initGraph();
+  },
+  watch: {
+    realtimeInfoWithTimestamp: {
+      immediate: true,
+      handler: function(val, oldVal) {
+        if (oldVal == null || val == null) {
+          return;
+        }
+        this.updateEchartsOption(this.cpu_chart, val.data[0].cpu_usage);
+        this.updateEchartsOption(this.memory_chart, val.data[0].mem_usage);
+        this.updateEchartsOption(this.disk_chart, val.data[0].disk_usage);
+        this.updateEchartsOption(this.rx_chart, val.data[0].net_rx_rate);
+        this.updateEchartsOption(this.tx_chart, val.data[0].net_tx_rate);
+      }
+    }
+  },
+  methods: {
+    initGraph() {
+      // init chart
+      this.cpu_chart = echarts.init(this.$refs.cpu_load);
+      this.memory_chart = echarts.init(this.$refs.memory_load);
+      this.disk_chart = echarts.init(this.$refs.disk_load);
+      this.rx_chart = echarts.init(this.$refs.rx_rate);
+      this.tx_chart = echarts.init(this.$refs.tx_rate);
 
       // define chart options
       const options = {
@@ -67,10 +117,10 @@ export default {
           yAxis: {
             type: 'value',
             boundaryGap: [0, '50%'],
-            name: "Usage/%",
+            name: "Usage",
           },
           series: [{
-            name: '成交',
+            name: 'metric',
             type: 'line',
             smooth: true,
             symbol: 'none',
@@ -82,157 +132,54 @@ export default {
           }]
       }
 
-      cpu_load.setOption(options);
-      memory_load.setOption(options);
-      disk_load.setOption(options);
-      rx_rate.setOption(options);
-      tx_rate.setOption(options);
-          
-      // 模拟 CPU 占用率变化
-      setInterval(() => {
-          let option = cpu_load.getOption();
-          let data = option.series[0].data;
-          let xAxisData = option.xAxis[0].data;
+      this.cpu_chart.setOption(options);
+      this.memory_chart.setOption(options);
+      this.disk_chart.setOption(options);
+      this.rx_chart.setOption(options);
+      this.tx_chart.setOption(options);
+    },
+    updateEchartsOption(chart, usage) {
+      let option = chart.getOption();
+      let data = option.series[0].data;
+      let xAxisData = option.xAxis[0].data;
 
+      let time = this.formatTimestamp(this.realtimeInfoWithTimestamp.timestamp[0])
 
-          let now = new Date();
-          let time = now.getHours() + ':' + now.getMinutes() + ':' + now.getSeconds();
-          const usage = Math.random() * 100; // 随机生成 CPU 占用率
-
-          if (xAxisData.length >= 20) {
+      if (xAxisData.length >= 20) {
             xAxisData.shift();
-          }
-          if (data.length >= 20) {
-            data.shift();
-          }
-          data.push(usage);
-          xAxisData.push(time);
-          
-          cpu_load.setOption({
-              xAxis: {
-                data: xAxisData
-              },
-              series: [{
-                  data: data,
-              }]
-          });
-      }, 1000); // 每隔 1 秒更新一次 CPU 占用率
+      }
+      if (data.length >= 20) {
+        data.shift();
+      }
+      data.push(usage);
+      xAxisData.push(time);
 
-      setInterval(() => {
-          let option = memory_load.getOption();
-          let data = option.series[0].data;
-          let xAxisData = option.xAxis[0].data;
+      chart.setOption({
+          xAxis: {
+            data: xAxisData
+          },
+          series: [{
+              data: data,
+          }]
+      });
+    },
+    formatTimestamp(timestamp) {
+      let date = new Date(timestamp * 1000); // to milliseconds
 
+      const options = {
+        timeZone: 'Asia/Shanghai',
+        hour12: false,
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit'
+      };
 
-          let now = new Date();
-          let time = now.getHours() + ':' + now.getMinutes() + ':' + now.getSeconds();
-          const usage = Math.random() * 100; // 随机生成 CPU 占用率
-
-          if (xAxisData.length >= 10) {
-            xAxisData.shift();
-          }
-          if (data.length >= 10) {
-            data.shift();
-          }
-          data.push(usage);
-          xAxisData.push(time);
-
-          memory_load.setOption({
-              xAxis: {
-                data: xAxisData
-              },
-              series: [{
-                  data: data,
-              }]
-          });
-      }, 1000); // 每隔 1 秒更新一次 CPU 占用率
-
-      setInterval(() => {
-          let option = disk_load.getOption();
-          let data = option.series[0].data;
-          let xAxisData = option.xAxis[0].data;
-
-
-          let now = new Date();
-          let time = now.getHours() + ':' + now.getMinutes() + ':' + now.getSeconds();
-          const usage = Math.random() * 100; // 随机生成 CPU 占用率
-
-          if (xAxisData.length >= 10) {
-            xAxisData.shift();
-          }
-          if (data.length >= 10) {
-            data.shift();
-          }
-          data.push(usage);
-          xAxisData.push(time);
-
-          disk_load.setOption({
-              xAxis: {
-                data: xAxisData
-              },
-              series: [{
-                  data: data,
-              }]
-          });
-      }, 1000); // 每隔 1 秒更新一次 CPU 占用率
-
-      setInterval(() => {
-          let option = rx_rate.getOption();
-          let data = option.series[0].data;
-          let xAxisData = option.xAxis[0].data;
-
-
-          let now = new Date();
-          let time = now.getHours() + ':' + now.getMinutes() + ':' + now.getSeconds();
-          const usage = Math.random() * 100; // 随机生成 CPU 占用率
-
-          if (xAxisData.length >= 10) {
-            xAxisData.shift();
-          }
-          if (data.length >= 10) {
-            data.shift();
-          }
-          data.push(usage);
-          xAxisData.push(time);
-          
-          rx_rate.setOption({
-              xAxis: {
-                data: xAxisData
-              },
-              series: [{
-                  data: data,
-              }]
-          });
-      }, 1000); // 每隔 1 秒更新一次 CPU 占用率
-
-      setInterval(() => {
-          let option = tx_rate.getOption();
-          let data = option.series[0].data;
-          let xAxisData = option.xAxis[0].data;
-
-
-          let now = new Date();
-          let time = now.getHours() + ':' + now.getMinutes() + ':' + now.getSeconds();
-          const usage = Math.random() * 100; // 随机生成 CPU 占用率
-
-          if (xAxisData.length >= 10) {
-            xAxisData.shift();
-          }
-          if (data.length >= 10) {
-            data.shift();
-          }
-          data.push(usage);
-          xAxisData.push(time);
-          
-          tx_rate.setOption({
-              xAxis: {
-                data: xAxisData
-              },
-              series: [{
-                  data: data,
-              }]
-          });
-      }, 1000); // 每隔 1 秒更新一次 CPU 占用率
+      const formattedTime = date.toLocaleString('en-US', options);
+      return formattedTime;
+    },
+    padZero(value) {
+      return String(value).padStart(2, '0'); // padding zero before single number
+    }
   }
 };
 </script>

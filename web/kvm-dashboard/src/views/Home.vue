@@ -9,7 +9,7 @@
         <el-main style="height:90vh">
           <system-info></system-info>
           <real-time-info :realtimeInfo="realtimeInfo"></real-time-info>
-          <history-info :realtimeInfo="realtimeInfo"></history-info>
+          <history-info :realtimeInfoWithTimestamp="realtimeInfoWithTimestamp"></history-info>
           <el-row :gutter="20">
             <el-col :span="16">
               <process-info></process-info>
@@ -46,6 +46,22 @@ export default {
   },
   data() {
     return {
+      realtimeInfoWithTimestamp: {
+          "name": "",
+          "unit": "",
+          "data": [
+              {
+                  "cpu_usage": 0,
+                  "mem_usage": 0,
+                  "disk_usage": 0,
+                  "net_rx_rate": 0,
+                  "net_tx_rate": 0
+              }
+          ],
+          "timestamp": [
+              0
+          ]
+      },
       realtimeInfo: {
           cpu_usage: 0,
           memory_usage: 0,
@@ -56,7 +72,6 @@ export default {
     }
   },
   mounted() {
-      this.initGraph();
       this.initWebSocket();
   },
   unmounted() {
@@ -78,16 +93,13 @@ export default {
         this.ws.onerror = this.handleError;
     },
     handleMessage(data) {
-        let realtimeResp = JSON.parse(data.data);
+        let Resp = JSON.parse(data.data);
         // console.log("handleMessage", realtimeResp)
-        realtimeResp = realtimeResp.data[0]
-        this.realtimeInfo = realtimeResp; // :value to update Rate
+        // realtimeResp = realtimeResp.data[0]
+        this.realtimeInfoWithTimestamp = Resp; // :value to update Rate
+        this.realtimeInfo = Resp.data[0]; // :value to update Rate
 
-        // console.log("realtimeInfo", realtimeResp)
-        // render
-        this.updateEchartsOption(this.cpu_chart, this.realtimeInfo.cpu_usage);
-        this.updateEchartsOption(this.memory_chart, this.realtimeInfo.mem_usage);
-        this.updateEchartsOption(this.disk_chart, this.realtimeInfo.disk_usage);
+        // console.log("realtimeInfo", this.realtimeInfoWithTimestamp)
     },
     handleOpen() {
         console.log('handleOpen');

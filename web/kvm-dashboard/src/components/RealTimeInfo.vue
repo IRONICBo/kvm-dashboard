@@ -73,6 +73,20 @@ export default {
         //     this.ws.close();
         // }
     },
+    watch: {
+        realtimeInfo: {
+            immediate: true,
+            handler: function (val, oldVal) {
+                if (oldVal == null || val == null) {
+                    return;
+                }
+                this.updateEchartsOption(this.cpu_chart, val.cpu_usage);
+                this.updateEchartsOption(this.memory_chart, val.mem_usage);
+                this.updateEchartsOption(this.disk_chart, val.disk_usage);
+            },
+            // deep: true // watch object
+        }
+    },
     methods: {
         initGraph() {
             // load chart
@@ -137,42 +151,42 @@ export default {
             });
         },
         // ws
-        initWebSocket() {
-            if (typeof WebSocket === 'undefined') {
-                return console.log('Your browser doesn\'t support WebSocket');
-            }
-            this.ws = SimpleWebSocket(TEMPINFO.uuid);
-            this.ws.onmessage = this.handleMessage;
-            this.ws.onopen = this.handleOpen;
-            this.ws.onclose = this.handleClose;
-            this.ws.onerror = this.handleError;
-        },
-        handleMessage(data) {
-            let realtimeResp = JSON.parse(data.data);
-            // console.log("handleMessage", realtimeResp)
-            realtimeResp = realtimeResp.data[0]
-            this.realtimeInfo = realtimeResp; // :value to update Rate
+        // initWebSocket() {
+        //     if (typeof WebSocket === 'undefined') {
+        //         return console.log('Your browser doesn\'t support WebSocket');
+        //     }
+        //     this.ws = SimpleWebSocket(TEMPINFO.uuid);
+        //     this.ws.onmessage = this.handleMessage;
+        //     this.ws.onopen = this.handleOpen;
+        //     this.ws.onclose = this.handleClose;
+        //     this.ws.onerror = this.handleError;
+        // },
+        // handleMessage(data) {
+        //     let realtimeResp = JSON.parse(data.data);
+        //     // console.log("handleMessage", realtimeResp)
+        //     realtimeResp = realtimeResp.data[0]
+        //     this.realtimeInfo = realtimeResp; // :value to update Rate
 
-            // console.log("realtimeInfo", realtimeResp)
-            // render
-            this.updateEchartsOption(this.cpu_chart, this.realtimeInfo.cpu_usage);
-            this.updateEchartsOption(this.memory_chart, this.realtimeInfo.mem_usage);
-            this.updateEchartsOption(this.disk_chart, this.realtimeInfo.disk_usage);
-        },
-        handleOpen() {
-            console.log('handleOpen');
-        },
-        handleClose() {
-            console.log('handleClose');
-        },
-        handleError() {
-            // reconnect
-            this.initWebSocket();
-            console.log('handleError');
-        },
-        handleSend(data) {
-            this.ws.send(data);
-        }
+        //     // console.log("realtimeInfo", realtimeResp)
+        //     // render
+        //     this.updateEchartsOption(this.cpu_chart, this.realtimeInfo.cpu_usage);
+        //     this.updateEchartsOption(this.memory_chart, this.realtimeInfo.mem_usage);
+        //     this.updateEchartsOption(this.disk_chart, this.realtimeInfo.disk_usage);
+        // },
+        // handleOpen() {
+        //     console.log('handleOpen');
+        // },
+        // handleClose() {
+        //     console.log('handleClose');
+        // },
+        // handleError() {
+        //     // reconnect
+        //     this.initWebSocket();
+        //     console.log('handleError');
+        // },
+        // handleSend(data) {
+        //     this.ws.send(data);
+        // }
     }
 };
 </script>
