@@ -39,8 +39,8 @@
 
 <script>
 import * as echarts from 'echarts';
-import {SimpleWebSocket} from '@/api/realtime';
-import {TEMPINFO} from '@/constant/constant';
+import { TEMPINFO } from '@/constant/constant';
+import { postSimpleHistory } from '@/api/history';
 
 
 export default {
@@ -66,10 +66,43 @@ export default {
   data() {
     return {
       cpu_chart: null,
-      memory_chart: null,
+      mem_chart: null,
       disk_chart: null,
       rx_rate: null,
       tx_rate: null,
+
+      historyInfo: {
+        "cpu_usage": {
+          "name": "",
+          "unit": "",
+          "data": [],
+          "timestamp": []
+        },
+        "mem_usage": {
+          "name": "",
+          "unit": "",
+          "data": [],
+          "timestamp": []
+        },
+        "disk_usage": {
+          "name": "",
+          "unit": "",
+          "data": [],
+          "timestamp": []
+        },
+        "net_rx_rate": {
+          "name": "",
+          "unit": "",
+          "data": [],
+          "timestamp": []
+        },
+        "net_tx_rate": {
+          "name": "",
+          "unit": "",
+          "data": [],
+          "timestamp": []
+        }
+      },
     }
   },
   mounted() {
@@ -83,18 +116,18 @@ export default {
           return;
         }
         this.updateEchartsOption(this.cpu_chart, val.data[0].cpu_usage);
-        this.updateEchartsOption(this.memory_chart, val.data[0].mem_usage);
+        this.updateEchartsOption(this.mem_chart, val.data[0].mem_usage);
         this.updateEchartsOption(this.disk_chart, val.data[0].disk_usage);
         this.updateEchartsOption(this.rx_chart, val.data[0].net_rx_rate);
         this.updateEchartsOption(this.tx_chart, val.data[0].net_tx_rate);
       }
-    }
+    },
   },
   methods: {
     initGraph() {
       // init chart
       this.cpu_chart = echarts.init(this.$refs.cpu_load);
-      this.memory_chart = echarts.init(this.$refs.memory_load);
+      this.mem_chart = echarts.init(this.$refs.memory_load);
       this.disk_chart = echarts.init(this.$refs.disk_load);
       this.rx_chart = echarts.init(this.$refs.rx_rate);
       this.tx_chart = echarts.init(this.$refs.tx_rate);
@@ -105,7 +138,7 @@ export default {
           trigger: 'axis',
           formatter: function (params) {
             var value = params[0].value;
-            return 'Load: ' + value + '%';
+            return 'Load: ' + value;
           },
           },
           xAxis: {
@@ -116,7 +149,7 @@ export default {
             },
           yAxis: {
             type: 'value',
-            boundaryGap: [0, '50%'],
+            boundaryGap: ['50%', '100%'],
             name: "Usage",
           },
           series: [{
@@ -133,10 +166,71 @@ export default {
       }
 
       this.cpu_chart.setOption(options);
-      this.memory_chart.setOption(options);
+      this.mem_chart.setOption(options);
       this.disk_chart.setOption(options);
       this.rx_chart.setOption(options);
       this.tx_chart.setOption(options);
+
+      // get history data
+      this.getHistoryInfo();
+    },
+    getHistoryInfo() {
+      let data = {
+        "UUID": TEMPINFO.uuid,
+        "Fields": [
+          "cpu_usage",
+          "mem_usage",
+          "disk_usage",
+          "net_rx_rate",
+          "net_tx_rate"
+        ]
+      }
+
+      postSimpleHistory(data)
+        .then(response => {
+          let resp = response.data;
+          for (let i = 0; i < resp.length; i++) {
+            this.historyInfo[resp[i].name] = resp[i];
+            // update chart
+            this.updateEchartsSeriesOption(this.cpu_chart, this.historyInfo.cpu_usage);
+            this.updateEchartsSeriesOption(this.mem_chart, this.historyInfo.mem_usage);
+            this.updateEchartsSeriesOption(this.disk_chart, this.historyInfo.disk_usage);
+            this.updateEchartsSeriesOption(this.rx_chart, this.historyInfo.net_rx_rate);
+            this.updateEchartsSeriesOption(this.tx_chart, this.historyInfo.net_tx_rate);
+          }
+          console.log(this.historyInfo);
+        })
+        .catch(error => {
+          console.log(error);
+        });
+    },
+    updateEchartsSeriesOption(chart, seriesData) {
+      let option = chart.getOption();
+      let data = option.series[0].data;
+      let xAxisData = option.xAxis[0].data;
+
+      for (let i = 0; i < seriesData.timestamp.length; i++) {
+        let time = this.formatTimestamp(seriesData.timestamp[i])
+        if (xAxisData.length >= 20) {
+              xAxisData.shift();
+        }
+        if (data.length >= 20) {
+          data.shift();
+        }
+        data.push(seriesData.data[i]);
+        xAxisData.push(time);
+      }
+
+      console.log("xAxisData", xAxisData, "seriesData", data);
+
+      chart.setOption({
+          xAxis: {
+            data: xAxisData
+          },
+          series: [{
+              data: data,
+          }]
+      });
     },
     updateEchartsOption(chart, usage) {
       let option = chart.getOption();
