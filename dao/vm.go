@@ -37,7 +37,7 @@ func (i *InfluxDB) ReadVMData(uuid, field, period, agg string) *model.Metric {
 	metric := &model.Metric{}
 
 	// query data
-	query := buildQuery(bucket, period, measurement, field, uuid, agg, count)
+	query := buildQuery(bucket, period, measurement, field, agg, uuid, count)
 	result, err := i.query.Query(context.Background(), query)
 	if err != nil {
 		utils.Log.Error("Can not query data", err)

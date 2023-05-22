@@ -14,14 +14,14 @@ func WebRouter(r *gin.Engine) {
 		HosInfo.GET("/basic", api.GetHostBasicInfo)
 		Graph := HosInfo.Group("/graph")
 		{
-			Graph.GET("/workload/history", api.GetHostWorkloadHistoryStats)
+			Graph.POST("/workload/history", api.GetHostWorkloadHistoryStats)
 			Graph.GET("/workload/realtime/ws", api.GetHostWorkloadRealtimeStats)
 		}
 		Table := HosInfo.Group("/table")
 		{
 			Table.GET("/process/realtime/ws", api.GetHostProcessRealtimeStats)
 
-			Table.GET("/alert/history", api.GetHostProcessHistoryAlertInfo)
+			Table.POST("/alert/history", api.GetHostProcessHistoryAlertInfo)
 			Table.GET("/alert/realtime/ws", api.GetHostProcessRealtimeAlertInfo)
 		}
 	}
@@ -42,7 +42,7 @@ func WebRouter(r *gin.Engine) {
 
 		Graph := VmInfo.Group("/graph")
 		{
-			Graph.GET("/workload/history", api.GetVmWorkloadHistoryStats)
+			Graph.POST("/workload/history", api.GetVmWorkloadHistoryStats)
 			Graph.GET("/workload/realtime/ws", api.GetVmWorkloadRealtimeStats)
 		}
 
@@ -50,7 +50,7 @@ func WebRouter(r *gin.Engine) {
 		{
 			Table.GET("/process/realtime/ws", api.GetVmProcessRealtimeStats)
 
-			Table.GET("/alert/history", api.GetVmAlertHistoryAlertInfo)
+			Table.POST("/alert/history", api.GetVmAlertHistoryAlertInfo)
 			Table.GET("/alert/realtime/ws", api.GetVmAlertRealtimeAlertInfo)
 		}
 	}

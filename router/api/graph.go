@@ -21,13 +21,13 @@ func GetHostWorkloadRealtimeStats(c *gin.Context) {
 func GetVmWorkloadHistoryStats(c *gin.Context) {
 	// get history data
 	param := &param.VmHistoryArgument{}
-	err := c.ShouldBindQuery(param)
+	err := c.ShouldBind(param)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, model.FailedWithMsg(err.Error()))
 		return
 	}
 
-	if param.Fields == nil {
+	if len(param.Fields) == 0 {
 		// fix fields
 		param.Fields = []string{
 			"cpu_usage",

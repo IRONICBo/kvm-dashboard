@@ -40,7 +40,7 @@ func TestGetLatestVMData(t *testing.T) {
 	uuid := "a5c655a8-589a-4524-b338-fa9b947a334d"
 	svc := NewService()
 	res := svc.GetLatestVMData(uuid, field)
-	utils.Log.Info(fmt.Sprintf("%#v", res))
+	utils.Log.Info(fmt.Sprintf("%#v", res[0]))
 }
 
 func TestGetVMMetrics(t *testing.T) {

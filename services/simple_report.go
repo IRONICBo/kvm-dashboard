@@ -19,7 +19,7 @@ func (svc *Service) GetLatestSimpleData(uuid string, fields []string) []*model.M
 
 	res := make([]*model.Metric, 0)
 	for _, field := range fields {
-		res = append(res, svc.Dao.ReadVMData(uuid, field, consts.PERIOD_1M, ""))
+		res = append(res, svc.Dao.ReadSimpleData(uuid, field, consts.PERIOD_1M, ""))
 	}
 
 	return res
