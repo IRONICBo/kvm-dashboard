@@ -13,3 +13,12 @@ export const postSimpleHistory = (data) => {
     // }
     return request(`/api/vm/graph/workload/history`,'post', data)
 }
+
+export const postAlertHistory = (data) => {
+    // {
+    //     "UUID": "5acefc92-b06d-48c8-a862-889c74d61c23",
+    //     "PageSize": 10,
+    //     "Page": 1
+    // }
+    return request(`/api/vm/table/alert/history`,'post', data)
+}

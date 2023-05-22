@@ -34,8 +34,8 @@
   
 <script>
 import * as echarts from 'echarts';
-import {SimpleWebSocket} from '@/api/realtime';
 import {TEMPINFO} from '@/constant/constant';
+import { ElNotification } from 'element-plus';
 
   
 export default {
@@ -51,27 +51,15 @@ export default {
     data() {
         return {
             ws: null,
-            // realtimeInfo: {
-            //     cpu_usage: 0,
-            //     memory_usage: 0,
-            //     disk_usage: 0,
-            //     net_rx_rate: 0,
-            //     net_tx_rate: 0,
-            // },
             cpu_chart: null,
-            memory_chart: null,
+            mem_chart: null,
             disk_chart: null,
         }
     },
     mounted() {
         this.initGraph();
-        // this.initWebSocket();
     },
     unmounted() {
-        // if the ws is null, can not use close method.
-        // if (this.ws) {
-        //     this.ws.close();
-        // }
     },
     watch: {
         realtimeInfo: {
@@ -80,9 +68,32 @@ export default {
                 if (oldVal == null || val == null) {
                     return;
                 }
-                this.updateEchartsOption(this.cpu_chart, val.cpu_usage);
-                this.updateEchartsOption(this.memory_chart, val.mem_usage);
-                this.updateEchartsOption(this.disk_chart, val.disk_usage);
+                this.updateEchartsOption(this.cpu_chart, val.cpu_usage, TEMPINFO.threshold.cpu_usage);
+                this.updateEchartsOption(this.mem_chart, val.mem_usage, TEMPINFO.threshold.mem_usage);
+                this.updateEchartsOption(this.disk_chart, val.disk_usage, TEMPINFO.threshold.disk_usage);
+
+                // alert when usage > threshold
+                if (val.cpu_usage > TEMPINFO.threshold.cpu_usage) {
+                    ElNotification({
+                        title: 'CPU Usage Alert',
+                        message: `CPU Usage: ${val.cpu_usage}%`,
+                        type: 'warning'
+                    });
+                }
+                if (val.mem_usage > TEMPINFO.threshold.mem_usage) {
+                    ElNotification({
+                        title: 'Memory Usage Alert',
+                        message: `Memory Usage: ${val.mem_usage}%`,
+                        type: 'warning'
+                    });
+                }
+                if (val.disk_usage > TEMPINFO.threshold.disk_usage) {
+                    ElNotification({
+                        title: 'Disk Usage Alert',
+                        message: `Disk Usage: ${val.disk_usage}%`,
+                        type: 'warning'
+                    });
+                }
             },
             // deep: true // watch object
         }
@@ -91,7 +102,7 @@ export default {
         initGraph() {
             // load chart
             this.cpu_chart = echarts.init(this.$refs.cpu_load);
-            this.memory_chart = echarts.init(this.$refs.memory_load);
+            this.mem_chart = echarts.init(this.$refs.memory_load);
             this.disk_chart = echarts.init(this.$refs.disk_load);
             // define chart options
             const options = {
@@ -130,12 +141,10 @@ export default {
             }
 
             this.cpu_chart.setOption(options);
-            this.memory_chart.setOption(options);
+            this.mem_chart.setOption(options);
             this.disk_chart.setOption(options);
         },
         updateEchartsOption(chart, usage, threshold=80) {
-            // console.log("updateEchartsOption", chart)
-            // console.log("updateEchartsOption", usage)
             const data = [
                 { value: usage, name: 'usage', itemStyle: { color: usage < threshold ? '#67C23A' : '#F56C6C'}},
                 { value: 100 - usage, name: 'free', itemStyle: { color: '#e1f3d8' }}
@@ -150,43 +159,6 @@ export default {
                 }]
             });
         },
-        // ws
-        // initWebSocket() {
-        //     if (typeof WebSocket === 'undefined') {
-        //         return console.log('Your browser doesn\'t support WebSocket');
-        //     }
-        //     this.ws = SimpleWebSocket(TEMPINFO.uuid);
-        //     this.ws.onmessage = this.handleMessage;
-        //     this.ws.onopen = this.handleOpen;
-        //     this.ws.onclose = this.handleClose;
-        //     this.ws.onerror = this.handleError;
-        // },
-        // handleMessage(data) {
-        //     let realtimeResp = JSON.parse(data.data);
-        //     // console.log("handleMessage", realtimeResp)
-        //     realtimeResp = realtimeResp.data[0]
-        //     this.realtimeInfo = realtimeResp; // :value to update Rate
-
-        //     // console.log("realtimeInfo", realtimeResp)
-        //     // render
-        //     this.updateEchartsOption(this.cpu_chart, this.realtimeInfo.cpu_usage);
-        //     this.updateEchartsOption(this.memory_chart, this.realtimeInfo.mem_usage);
-        //     this.updateEchartsOption(this.disk_chart, this.realtimeInfo.disk_usage);
-        // },
-        // handleOpen() {
-        //     console.log('handleOpen');
-        // },
-        // handleClose() {
-        //     console.log('handleClose');
-        // },
-        // handleError() {
-        //     // reconnect
-        //     this.initWebSocket();
-        //     console.log('handleError');
-        // },
-        // handleSend(data) {
-        //     this.ws.send(data);
-        // }
     }
 };
 </script>

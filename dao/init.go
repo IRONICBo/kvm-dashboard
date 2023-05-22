@@ -79,3 +79,29 @@ func buildQuery(bucket, period, measurement, field, agg, uuid string,
 			field, uuid, count)
 	}
 }
+
+func buildQueryWithPage(bucket, period, measurement, uuid string,
+	pagesize, page int) string {
+	// use group to get the all data
+	return fmt.Sprintf(`
+		from(bucket: "%s")
+		|> range(start: -%s)
+		|> filter(fn: (r) => r._measurement == "%s")
+		|> filter(fn: (r) => r.uuid == "%s")
+		|> group(columns: ["*"])
+		|> sort(columns: ["_time"], desc: true)
+		|> limit(n: %d, offset: %d)
+		|> yield(name: "results")`, bucket, period, measurement,
+		uuid, pagesize, (page-1)*pagesize)
+}
+
+func buildQueryWithCount(bucket, period, measurement, uuid string) string {
+	// use group to get the all data
+	return fmt.Sprintf(`
+		from(bucket: "%s")
+		|> range(start: -%s)
+		|> filter(fn: (r) => r._measurement == "%s")
+		|> filter(fn: (r) => r.uuid == "%s")
+		|> group(columns: ["*"])	
+		|> count()`, bucket, period, measurement, uuid)
+}

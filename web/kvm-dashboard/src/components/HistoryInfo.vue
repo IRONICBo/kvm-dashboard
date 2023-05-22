@@ -136,10 +136,10 @@ export default {
       const options = {
         tooltip: {
           trigger: 'axis',
-          formatter: function (params) {
-            var value = params[0].value;
-            return 'Load: ' + value;
-          },
+            formatter: function (params) {
+              var value = params[0].value;
+              return 'Load: ' + value;
+            },
           },
           xAxis: {
               type: 'category',
@@ -198,7 +198,6 @@ export default {
             this.updateEchartsSeriesOption(this.rx_chart, this.historyInfo.net_rx_rate);
             this.updateEchartsSeriesOption(this.tx_chart, this.historyInfo.net_tx_rate);
           }
-          console.log(this.historyInfo);
         })
         .catch(error => {
           console.log(error);
@@ -220,8 +219,6 @@ export default {
         data.push(seriesData.data[i]);
         xAxisData.push(time);
       }
-
-      console.log("xAxisData", xAxisData, "seriesData", data);
 
       chart.setOption({
           xAxis: {

@@ -1,5 +1,5 @@
 <template>
-    <el-card class="box-card">
+    <el-card class="box-card" >
       <template #header>
         <div class="card-header">
           <span>Process Workload</span>

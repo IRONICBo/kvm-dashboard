@@ -20,9 +20,10 @@ const (
 )
 
 const (
-	PERIOD_1M = "1m"
-	PERIOD_5M = "5m"
-	PERIOD_1H = "1h"
+	PERIOD_1M  = "1m"
+	PERIOD_5M  = "5m"
+	PERIOD_1H  = "1h"
+	PERIOD_30D = "30d"
 )
 
 const (
@@ -36,12 +37,20 @@ const (
 	// measurement
 	VM_MEASUREMENT     = "vm"
 	SIMPLE_MEASUREMENT = "simple"
+	ALERT_MEASUREMENT  = "alert"
 )
 
 // Unit
 var (
 	// todo: add index unit
 	UNIT = map[string]string{}
+)
+
+// Threshold
+var (
+	CPU_USAGE_THRESHOLD  = 80
+	MEM_USAGE_THRESHOLD  = 80
+	DISK_USAGE_THRESHOLD = 80
 )
 
 // Realtime data

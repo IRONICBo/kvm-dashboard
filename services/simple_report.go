@@ -8,6 +8,7 @@ import (
 	"kvm-dashboard/router/ws"
 	"kvm-dashboard/utils"
 	"kvm-dashboard/vm/agent"
+	"kvm-dashboard/vm/data"
 	"time"
 )
 
@@ -89,6 +90,9 @@ func (svc *Service) saveAndReportSimpleData(agent *agent.SimpleAgent, uuid strin
 				utils.Log.Error("Can not write simple data to ws", err)
 			}
 
+			// alert data
+			go svc.alertSimpleData(data, uuid)
+
 			// write to influxdb
 			err = svc.Dao.WriteSimpleData(data, map[string]string{
 				"uuid": uuid,
@@ -98,6 +102,52 @@ func (svc *Service) saveAndReportSimpleData(agent *agent.SimpleAgent, uuid strin
 			}
 		}
 	}
+}
+
+func (svc *Service) alertSimpleData(simpleData *data.SimpleData, uuid string) error {
+	if int(simpleData.CPUUsage) > consts.CPU_USAGE_THRESHOLD {
+		alertData := map[string]interface{}{
+			"cpu_usage": simpleData.CPUUsage,
+		}
+
+		err := svc.Dao.WriteAlertData(alertData, map[string]string{
+			"uuid": uuid,
+		})
+		if err != nil {
+			utils.Log.Error("Can not write vm data", err)
+			return err
+		}
+	}
+
+	if int(simpleData.MemUsage) > consts.MEM_USAGE_THRESHOLD {
+		alertData := map[string]interface{}{
+			"mem_usage": simpleData.MemUsage,
+		}
+
+		err := svc.Dao.WriteAlertData(alertData, map[string]string{
+			"uuid": uuid,
+		})
+		if err != nil {
+			utils.Log.Error("Can not write vm data", err)
+			return err
+		}
+	}
+
+	if int(simpleData.DiskUsage) > consts.DISK_USAGE_THRESHOLD {
+		alertData := map[string]interface{}{
+			"disk_usage": simpleData.DiskUsage,
+		}
+
+		err := svc.Dao.WriteAlertData(alertData, map[string]string{
+			"uuid": uuid,
+		})
+		if err != nil {
+			utils.Log.Error("Can not write vm data", err)
+			return err
+		}
+	}
+
+	return nil
 }
 
 // todo: delete url param

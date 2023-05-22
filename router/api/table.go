@@ -4,6 +4,7 @@ import (
 	"kvm-dashboard/model"
 	"kvm-dashboard/router/param"
 	"kvm-dashboard/router/ws"
+	"kvm-dashboard/services"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -41,7 +42,17 @@ func GetVmProcessRealtimeStats(c *gin.Context) {
 }
 
 func GetVmAlertHistoryAlertInfo(c *gin.Context) {
+	param := &param.VmPageAgrument{}
+	err := c.ShouldBind(param)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, model.FailedWithMsg(err.Error()))
+		return
+	}
 
+	svc := services.NewService()
+	pageData := svc.GetAlertInfo(param.UUID, param.PageSize, param.Page)
+
+	c.JSON(http.StatusOK, model.SuccessWithData(pageData))
 }
 
 func GetVmAlertRealtimeAlertInfo(c *gin.Context) {
