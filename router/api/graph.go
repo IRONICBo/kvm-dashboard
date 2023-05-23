@@ -18,6 +18,27 @@ func GetHostWorkloadRealtimeStats(c *gin.Context) {
 
 }
 
+func GetMetricHistoryStats(c *gin.Context) {
+	param := &param.VmMetricArgument{}
+	err := c.ShouldBind(param)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, model.FailedWithMsg(err.Error()))
+		return
+	}
+
+	svc := services.NewService()
+	metricHistoryData := svc.GetVMData(param.UUID, param.Period, param.Func, param.Fields)
+
+	c.JSON(http.StatusOK, model.SuccessWithData(metricHistoryData))
+}
+
+func GetMetricList(c *gin.Context) {
+	svc := services.NewService()
+	metricList := svc.GetVMMetrics()
+
+	c.JSON(http.StatusOK, model.SuccessWithData(metricList))
+}
+
 func GetVmWorkloadHistoryStats(c *gin.Context) {
 	// get history data
 	param := &param.VmHistoryArgument{}

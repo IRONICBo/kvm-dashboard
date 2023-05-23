@@ -3,7 +3,6 @@
     <template #header>
       <div class="card-header">
         <span>VM Workload - History</span>
-        <el-button class="button" text>xxx</el-button>
       </div>
     </template>
     <el-row>

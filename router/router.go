@@ -44,6 +44,9 @@ func WebRouter(r *gin.Engine) {
 		{
 			Graph.POST("/workload/history", api.GetVmWorkloadHistoryStats)
 			Graph.GET("/workload/realtime/ws", api.GetVmWorkloadRealtimeStats)
+
+			Graph.POST("/metric/history", api.GetMetricHistoryStats)
+			Graph.GET("/metric/list", api.GetMetricList)
 		}
 
 		Table := VmInfo.Group("/table")
@@ -51,7 +54,8 @@ func WebRouter(r *gin.Engine) {
 			Table.GET("/process/realtime/ws", api.GetVmProcessRealtimeStats)
 
 			Table.POST("/alert/history", api.GetVmAlertHistoryAlertInfo)
-			Table.GET("/alert/realtime/ws", api.GetVmAlertRealtimeAlertInfo)
+			// deprecated
+			// Table.GET("/alert/realtime/ws", api.GetVmAlertRealtimeAlertInfo)
 		}
 	}
 

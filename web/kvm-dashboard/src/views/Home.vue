@@ -9,6 +9,7 @@
         <el-main style="height:90vh">
           <system-info></system-info>
           <real-time-info :realtimeInfo="realtimeInfo"></real-time-info>
+          <metric-info></metric-info>
           <history-info :realtimeInfoWithTimestamp="realtimeInfoWithTimestamp"></history-info>
           <el-row :gutter="20">
             <el-col :span="16">
@@ -25,12 +26,13 @@
 </template>
 
 <script>
-import RealTimeInfo from '../components/RealTimeInfo.vue'
-import HistoryInfo from '../components/HistoryInfo.vue'
-import ProcessInfo from '../components/ProcessInfo.vue'
-import AlertInfo from '../components/AlertInfo.vue'
-import Header from '../components/Header.vue'
-import SystemInfo from '../components/SystemInfo.vue'
+import RealTimeInfo from '@/components/RealTimeInfo.vue'
+import HistoryInfo from '@/components/HistoryInfo.vue'
+import ProcessInfo from '@/components/ProcessInfo.vue'
+import AlertInfo from '@/components/AlertInfo.vue'
+import Header from '@/components/Header.vue'
+import SystemInfo from '@/components/SystemInfo.vue'
+import MetricInfo from '@/components/MetricInfo.vue'
 
 import {SimpleWebSocket} from '@/api/realtime';
 import {TEMPINFO} from '@/constant/constant';
@@ -43,6 +45,7 @@ export default {
     ProcessInfo,
     AlertInfo,
     SystemInfo,
+    MetricInfo,
   },
   data() {
     return {

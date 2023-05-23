@@ -22,3 +22,17 @@ export const postAlertHistory = (data) => {
     // }
     return request(`/api/vm/table/alert/history`,'post', data)
 }
+
+export const postMetricHistory = (data) => {
+    // {
+    //     "UUID": "5acefc92-b06d-48c8-a862-889c74d61c23",
+    //     "Fields": ["block_stats.rd_bytes"],
+    //     "Period": "1h",
+    //     "Func": "mean"
+    // }
+    return request(`/api/vm/graph/metric/history`,'post', data)
+}
+
+export const getMetricList = () => {
+    return request(`/api/vm/graph/metric/list`,'get')
+}

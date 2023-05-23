@@ -2,7 +2,6 @@ package dao
 
 import (
 	"context"
-	"fmt"
 	"kvm-dashboard/consts"
 	"kvm-dashboard/model"
 	"kvm-dashboard/utils"
@@ -33,7 +32,7 @@ func (i *InfluxDB) ReadAlertData(uuid, period string, pagesize, page int) *model
 		utils.Log.Error("Can not query data", err)
 		return &model.Page{}
 	}
-	fmt.Println(query)
+	// fmt.Println(query)
 
 	// process result to map
 	pageItems := make([]*model.PageItem, 0)

@@ -111,7 +111,8 @@ func (svc *Service) alertSimpleData(simpleData *data.SimpleData, uuid string) er
 		}
 
 		err := svc.Dao.WriteAlertData(alertData, map[string]string{
-			"uuid": uuid,
+			"uuid":      uuid,
+			"timestamp": time.Now().Local().String(), // used for dumplicate data
 		})
 		if err != nil {
 			utils.Log.Error("Can not write vm data", err)
@@ -125,7 +126,8 @@ func (svc *Service) alertSimpleData(simpleData *data.SimpleData, uuid string) er
 		}
 
 		err := svc.Dao.WriteAlertData(alertData, map[string]string{
-			"uuid": uuid,
+			"uuid":      uuid,
+			"timestamp": time.Now().Local().String(),
 		})
 		if err != nil {
 			utils.Log.Error("Can not write vm data", err)
@@ -139,7 +141,8 @@ func (svc *Service) alertSimpleData(simpleData *data.SimpleData, uuid string) er
 		}
 
 		err := svc.Dao.WriteAlertData(alertData, map[string]string{
-			"uuid": uuid,
+			"uuid":      uuid,
+			"timestamp": time.Now().Local().String(),
 		})
 		if err != nil {
 			utils.Log.Error("Can not write vm data", err)
