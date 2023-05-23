@@ -1,12 +1,14 @@
 <template>
   <div class="home">
     <el-container>
-      <el-header style="height: auto;">
+      <el-header style="height: 6vh;" >
         <Header />
       </el-header>
       <el-container>
-        <el-aside width="200px">Aside</el-aside>
-        <el-main style="height:90vh">
+        <el-aside style="width: 250px; height: 94vh;">
+          <Aside />
+        </el-aside>
+        <el-main style="height:94vh">
           <system-info></system-info>
           <real-time-info :realtimeInfo="realtimeInfo"></real-time-info>
           <metric-info></metric-info>
@@ -31,6 +33,7 @@ import HistoryInfo from '@/components/HistoryInfo.vue'
 import ProcessInfo from '@/components/ProcessInfo.vue'
 import AlertInfo from '@/components/AlertInfo.vue'
 import Header from '@/components/Header.vue'
+import Aside from '@/components/Aside.vue'
 import SystemInfo from '@/components/SystemInfo.vue'
 import MetricInfo from '@/components/MetricInfo.vue'
 
@@ -40,6 +43,7 @@ import {TEMPINFO} from '@/constant/constant';
 export default {
   components: { 
     Header,
+    Aside,
     RealTimeInfo, 
     HistoryInfo, 
     ProcessInfo,
