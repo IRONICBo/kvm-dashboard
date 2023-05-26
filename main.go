@@ -6,6 +6,8 @@ import (
 	"kvm-dashboard/dao"
 	"kvm-dashboard/router"
 	"kvm-dashboard/router/ws"
+	"kvm-dashboard/rpc/rpc_client"
+	"kvm-dashboard/rpc/rpc_sever"
 	"kvm-dashboard/utils"
 
 	"github.com/gin-gonic/gin"
@@ -37,6 +39,10 @@ func main() {
 	ws.NewControlWSServer()
 	ws.NewProcessWSServer()
 	ws.NewSimpleWSServer()
+
+	// rpc
+	go rpc_sever.StartRpcSever(config.RpcConf.SeverHost, config.RpcConf.SeverPort)
+	go rpc_client.StartRpcClient(config.RpcConf.ClientHost, config.RpcConf.ClientPort)
 
 	r.Run(config.AppConf.Host + ":" + config.AppConf.Port)
 }

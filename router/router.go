@@ -9,15 +9,20 @@ import (
 func WebRouter(r *gin.Engine) {
 	kvm_dashboard_api := r.Group("/api")
 
-	HosInfo := kvm_dashboard_api.Group("/host")
+	MachineInfo := kvm_dashboard_api.Group("/machine")
 	{
-		HosInfo.GET("/basic", api.GetHostBasicInfo)
-		Graph := HosInfo.Group("/graph")
+		MachineInfo.GET("/list", api.GetMachineList)
+	}
+
+	HostInfo := kvm_dashboard_api.Group("/host")
+	{
+		HostInfo.GET("/basic", api.GetHostBasicInfo)
+		Graph := HostInfo.Group("/graph")
 		{
 			Graph.POST("/workload/history", api.GetHostWorkloadHistoryStats)
 			Graph.GET("/workload/realtime/ws", api.GetHostWorkloadRealtimeStats)
 		}
-		Table := HosInfo.Group("/table")
+		Table := HostInfo.Group("/table")
 		{
 			Table.GET("/process/realtime/ws", api.GetHostProcessRealtimeStats)
 

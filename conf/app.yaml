@@ -11,3 +11,11 @@ database:
     token: ldrl4NwtC-Mq0O-N1VmrKN2jh6WpMzA7fXLKpgpfT0tWWZIlf_Doer84jkWcRwgy6cFzVj2ge_HCZFcA_Xfdkg==
     org: hust
     bucket: kvm-dashboard
+
+rpc:
+  server:
+    host: localhost
+    port: 50001
+  client:
+    host: localhost
+    port: 50002

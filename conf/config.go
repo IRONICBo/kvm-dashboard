@@ -10,6 +10,7 @@ import (
 type Config struct {
 	AppConf      AppConf
 	InfluxDBConf InfluxDBConf
+	RpcConf      RpcConf
 }
 
 type AppConf struct {
@@ -25,6 +26,13 @@ type InfluxDBConf struct {
 	Token  string
 	Org    string
 	Bucket string
+}
+
+type RpcConf struct {
+	SeverHost  string
+	SeverPort  string
+	ClientHost string
+	ClientPort string
 }
 
 func InitConf() *Config {
@@ -51,6 +59,12 @@ func InitConf() *Config {
 			Token:  viper.GetString("database.influxdb.token"),
 			Org:    viper.GetString("database.influxdb.org"),
 			Bucket: viper.GetString("database.influxdb.bucket"),
+		},
+		RpcConf: RpcConf{
+			SeverHost:  viper.GetString("rpc.server.host"),
+			SeverPort:  viper.GetString("rpc.server.port"),
+			ClientHost: viper.GetString("rpc.client.host"),
+			ClientPort: viper.GetString("rpc.client.port"),
 		},
 	}
 
