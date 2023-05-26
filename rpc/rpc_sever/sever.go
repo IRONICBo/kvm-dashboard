@@ -14,15 +14,15 @@ import (
 )
 
 type server struct {
-	threshold.UnimplementedVMTHresholdServer
+	threshold.UnimplementedRpcSetDomainThvServer
 }
 
-func (s *server) SetThreshold(ctx context.Context, thres *threshold.SetThresholdRequest) (*threshold.SetThresholdResponse, error) {
+func (s *server) SetDomainThv(ctx context.Context, thres *threshold.SetDomainRequest) (*threshold.SetDomainResponse, error) {
 	uuid := thres.Uuid
 	data, ok := consts.VM_THRESHOLD[uuid]
 	if !ok {
 		utils.Log.Error(fmt.Sprintf("uuid %s not found", uuid))
-		return &threshold.SetThresholdResponse{
+		return &threshold.SetDomainResponse{
 			Status: false,
 		}, fmt.Errorf("uuid %s not found", uuid)
 	}
@@ -30,21 +30,21 @@ func (s *server) SetThreshold(ctx context.Context, thres *threshold.SetThreshold
 	cpuUsageThreshold, err := strconv.Atoi(thres.CpuThv)
 	if err != nil {
 		utils.Log.Error(fmt.Sprintf("cpuUsageThreshold %s is not a number", thres.CpuThv))
-		return &threshold.SetThresholdResponse{
+		return &threshold.SetDomainResponse{
 			Status: false,
 		}, err
 	}
 	diskUsageThreshold, err := strconv.Atoi(thres.DiskThv)
 	if err != nil {
 		utils.Log.Error(fmt.Sprintf("diskUsageThreshold %s is not a number", thres.CpuThv))
-		return &threshold.SetThresholdResponse{
+		return &threshold.SetDomainResponse{
 			Status: false,
 		}, err
 	}
 	memUsageThreshold, err := strconv.Atoi(thres.MemoryThv)
 	if err != nil {
 		utils.Log.Error(fmt.Sprintf("memUsageThreshold %s is not a number", thres.CpuThv))
-		return &threshold.SetThresholdResponse{
+		return &threshold.SetDomainResponse{
 			Status: false,
 		}, err
 	}
@@ -54,7 +54,7 @@ func (s *server) SetThreshold(ctx context.Context, thres *threshold.SetThreshold
 	data.MemUsageThreshold = memUsageThreshold
 	consts.VM_THRESHOLD[uuid] = data
 
-	resp := &threshold.SetThresholdResponse{
+	resp := &threshold.SetDomainResponse{
 		Status: true,
 	}
 	return resp, nil
@@ -69,7 +69,7 @@ func StartRpcSever(ip, port string) {
 	}
 
 	s := grpc.NewServer()
-	threshold.RegisterVMTHresholdServer(s, &server{})
+	threshold.RegisterRpcSetDomainThvServer(s, &server{})
 	reflection.Register(s)
 
 	if s.Serve(lis) != nil {

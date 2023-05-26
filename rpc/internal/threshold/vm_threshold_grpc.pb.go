@@ -18,92 +18,6 @@ import (
 // Requires gRPC-Go v1.32.0 or later.
 const _ = grpc.SupportPackageIsVersion7
 
-// VMTHresholdClient is the client API for VMTHreshold service.
-//
-// For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
-type VMTHresholdClient interface {
-	SetThreshold(ctx context.Context, in *SetThresholdRequest, opts ...grpc.CallOption) (*SetThresholdResponse, error)
-}
-
-type vMTHresholdClient struct {
-	cc grpc.ClientConnInterface
-}
-
-func NewVMTHresholdClient(cc grpc.ClientConnInterface) VMTHresholdClient {
-	return &vMTHresholdClient{cc}
-}
-
-func (c *vMTHresholdClient) SetThreshold(ctx context.Context, in *SetThresholdRequest, opts ...grpc.CallOption) (*SetThresholdResponse, error) {
-	out := new(SetThresholdResponse)
-	err := c.cc.Invoke(ctx, "/threshold.VMTHreshold/SetThreshold", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-// VMTHresholdServer is the server API for VMTHreshold service.
-// All implementations must embed UnimplementedVMTHresholdServer
-// for forward compatibility
-type VMTHresholdServer interface {
-	SetThreshold(context.Context, *SetThresholdRequest) (*SetThresholdResponse, error)
-	mustEmbedUnimplementedVMTHresholdServer()
-}
-
-// UnimplementedVMTHresholdServer must be embedded to have forward compatible implementations.
-type UnimplementedVMTHresholdServer struct {
-}
-
-func (UnimplementedVMTHresholdServer) SetThreshold(context.Context, *SetThresholdRequest) (*SetThresholdResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method SetThreshold not implemented")
-}
-func (UnimplementedVMTHresholdServer) mustEmbedUnimplementedVMTHresholdServer() {}
-
-// UnsafeVMTHresholdServer may be embedded to opt out of forward compatibility for this service.
-// Use of this interface is not recommended, as added methods to VMTHresholdServer will
-// result in compilation errors.
-type UnsafeVMTHresholdServer interface {
-	mustEmbedUnimplementedVMTHresholdServer()
-}
-
-func RegisterVMTHresholdServer(s grpc.ServiceRegistrar, srv VMTHresholdServer) {
-	s.RegisterService(&VMTHreshold_ServiceDesc, srv)
-}
-
-func _VMTHreshold_SetThreshold_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(SetThresholdRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(VMTHresholdServer).SetThreshold(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/threshold.VMTHreshold/SetThreshold",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(VMTHresholdServer).SetThreshold(ctx, req.(*SetThresholdRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-// VMTHreshold_ServiceDesc is the grpc.ServiceDesc for VMTHreshold service.
-// It's only intended for direct use with grpc.RegisterService,
-// and not to be introspected or modified (even as a copy)
-var VMTHreshold_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "threshold.VMTHreshold",
-	HandlerType: (*VMTHresholdServer)(nil),
-	Methods: []grpc.MethodDesc{
-		{
-			MethodName: "SetThreshold",
-			Handler:    _VMTHreshold_SetThreshold_Handler,
-		},
-	},
-	Streams:  []grpc.StreamDesc{},
-	Metadata: "vm_threshold.proto",
-}
-
 // RpcDomainThvClient is the client API for RpcDomainThv service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
@@ -184,6 +98,92 @@ var RpcDomainThv_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetDomainThv",
 			Handler:    _RpcDomainThv_GetDomainThv_Handler,
+		},
+	},
+	Streams:  []grpc.StreamDesc{},
+	Metadata: "vm_threshold.proto",
+}
+
+// RpcSetDomainThvClient is the client API for RpcSetDomainThv service.
+//
+// For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
+type RpcSetDomainThvClient interface {
+	SetDomainThv(ctx context.Context, in *SetDomainRequest, opts ...grpc.CallOption) (*SetDomainResponse, error)
+}
+
+type rpcSetDomainThvClient struct {
+	cc grpc.ClientConnInterface
+}
+
+func NewRpcSetDomainThvClient(cc grpc.ClientConnInterface) RpcSetDomainThvClient {
+	return &rpcSetDomainThvClient{cc}
+}
+
+func (c *rpcSetDomainThvClient) SetDomainThv(ctx context.Context, in *SetDomainRequest, opts ...grpc.CallOption) (*SetDomainResponse, error) {
+	out := new(SetDomainResponse)
+	err := c.cc.Invoke(ctx, "/threshold.RpcSetDomainThv/SetDomainThv", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+// RpcSetDomainThvServer is the server API for RpcSetDomainThv service.
+// All implementations must embed UnimplementedRpcSetDomainThvServer
+// for forward compatibility
+type RpcSetDomainThvServer interface {
+	SetDomainThv(context.Context, *SetDomainRequest) (*SetDomainResponse, error)
+	mustEmbedUnimplementedRpcSetDomainThvServer()
+}
+
+// UnimplementedRpcSetDomainThvServer must be embedded to have forward compatible implementations.
+type UnimplementedRpcSetDomainThvServer struct {
+}
+
+func (UnimplementedRpcSetDomainThvServer) SetDomainThv(context.Context, *SetDomainRequest) (*SetDomainResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SetDomainThv not implemented")
+}
+func (UnimplementedRpcSetDomainThvServer) mustEmbedUnimplementedRpcSetDomainThvServer() {}
+
+// UnsafeRpcSetDomainThvServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to RpcSetDomainThvServer will
+// result in compilation errors.
+type UnsafeRpcSetDomainThvServer interface {
+	mustEmbedUnimplementedRpcSetDomainThvServer()
+}
+
+func RegisterRpcSetDomainThvServer(s grpc.ServiceRegistrar, srv RpcSetDomainThvServer) {
+	s.RegisterService(&RpcSetDomainThv_ServiceDesc, srv)
+}
+
+func _RpcSetDomainThv_SetDomainThv_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SetDomainRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(RpcSetDomainThvServer).SetDomainThv(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/threshold.RpcSetDomainThv/SetDomainThv",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(RpcSetDomainThvServer).SetDomainThv(ctx, req.(*SetDomainRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+// RpcSetDomainThv_ServiceDesc is the grpc.ServiceDesc for RpcSetDomainThv service.
+// It's only intended for direct use with grpc.RegisterService,
+// and not to be introspected or modified (even as a copy)
+var RpcSetDomainThv_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "threshold.RpcSetDomainThv",
+	HandlerType: (*RpcSetDomainThvServer)(nil),
+	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "SetDomainThv",
+			Handler:    _RpcSetDomainThv_SetDomainThv_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

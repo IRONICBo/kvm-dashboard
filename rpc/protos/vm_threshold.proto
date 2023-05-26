@@ -2,32 +2,28 @@ syntax="proto3";
 option go_package = "kvm-dashboard/rpc/internal/threshold;threshold";
 package threshold;
 
-service VMTHreshold {
-    rpc SetThreshold (SetThresholdRequest) returns (SetThresholdResponse) {};
-}
-
-service RpcDomainThv {
-    rpc GetDomainThv (GetDomainThvRequest) returns (GetDomainThvResponse) {};
-}
-
-message SetThresholdRequest {
-    string uuid = 1;
-    string cpuThv = 2;
-    string memoryThv = 3;
-    string diskThv = 4;
-}
-
-message SetThresholdResponse {
-    bool status = 1;
-}
-
 message GetDomainThvRequest {
-    string uuid = 1;
+  string uuid = 1;
+}
+message GetDomainThvResponse {
+  string uuid = 1;
+  string cpuThv = 2;
+  string memoryThv = 3;
+  string diskThv = 4;
+}
+service RpcDomainThv {
+  rpc GetDomainThv (GetDomainThvRequest) returns (GetDomainThvResponse);
 }
 
-message GetDomainThvResponse {
-    string uuid = 1;
-    string cpuThv = 2;
-    string memoryThv = 3;
-    string diskThv = 4;
+message SetDomainRequest {
+  string uuid = 1;
+  string cpuThv = 2;
+  string memoryThv = 3;
+  string diskThv = 4;
+}
+message SetDomainResponse {
+  bool status = 1;
+}
+service RpcSetDomainThv {
+  rpc SetDomainThv (SetDomainRequest) returns (SetDomainResponse);
 }

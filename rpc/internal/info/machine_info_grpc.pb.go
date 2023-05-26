@@ -19,86 +19,86 @@ import (
 // Requires gRPC-Go v1.32.0 or later.
 const _ = grpc.SupportPackageIsVersion7
 
-// MachineInfoClient is the client API for MachineInfo service.
+// RpcMachineInfoClient is the client API for RpcMachineInfo service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
-type MachineInfoClient interface {
+type RpcMachineInfoClient interface {
 	GetMachineInfo(ctx context.Context, in *empty.Empty, opts ...grpc.CallOption) (*GetMachineInfoResponse, error)
 }
 
-type machineInfoClient struct {
+type rpcMachineInfoClient struct {
 	cc grpc.ClientConnInterface
 }
 
-func NewMachineInfoClient(cc grpc.ClientConnInterface) MachineInfoClient {
-	return &machineInfoClient{cc}
+func NewRpcMachineInfoClient(cc grpc.ClientConnInterface) RpcMachineInfoClient {
+	return &rpcMachineInfoClient{cc}
 }
 
-func (c *machineInfoClient) GetMachineInfo(ctx context.Context, in *empty.Empty, opts ...grpc.CallOption) (*GetMachineInfoResponse, error) {
+func (c *rpcMachineInfoClient) GetMachineInfo(ctx context.Context, in *empty.Empty, opts ...grpc.CallOption) (*GetMachineInfoResponse, error) {
 	out := new(GetMachineInfoResponse)
-	err := c.cc.Invoke(ctx, "/info.MachineInfo/GetMachineInfo", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/info.RpcMachineInfo/GetMachineInfo", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-// MachineInfoServer is the server API for MachineInfo service.
-// All implementations must embed UnimplementedMachineInfoServer
+// RpcMachineInfoServer is the server API for RpcMachineInfo service.
+// All implementations must embed UnimplementedRpcMachineInfoServer
 // for forward compatibility
-type MachineInfoServer interface {
+type RpcMachineInfoServer interface {
 	GetMachineInfo(context.Context, *empty.Empty) (*GetMachineInfoResponse, error)
-	mustEmbedUnimplementedMachineInfoServer()
+	mustEmbedUnimplementedRpcMachineInfoServer()
 }
 
-// UnimplementedMachineInfoServer must be embedded to have forward compatible implementations.
-type UnimplementedMachineInfoServer struct {
+// UnimplementedRpcMachineInfoServer must be embedded to have forward compatible implementations.
+type UnimplementedRpcMachineInfoServer struct {
 }
 
-func (UnimplementedMachineInfoServer) GetMachineInfo(context.Context, *empty.Empty) (*GetMachineInfoResponse, error) {
+func (UnimplementedRpcMachineInfoServer) GetMachineInfo(context.Context, *empty.Empty) (*GetMachineInfoResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetMachineInfo not implemented")
 }
-func (UnimplementedMachineInfoServer) mustEmbedUnimplementedMachineInfoServer() {}
+func (UnimplementedRpcMachineInfoServer) mustEmbedUnimplementedRpcMachineInfoServer() {}
 
-// UnsafeMachineInfoServer may be embedded to opt out of forward compatibility for this service.
-// Use of this interface is not recommended, as added methods to MachineInfoServer will
+// UnsafeRpcMachineInfoServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to RpcMachineInfoServer will
 // result in compilation errors.
-type UnsafeMachineInfoServer interface {
-	mustEmbedUnimplementedMachineInfoServer()
+type UnsafeRpcMachineInfoServer interface {
+	mustEmbedUnimplementedRpcMachineInfoServer()
 }
 
-func RegisterMachineInfoServer(s grpc.ServiceRegistrar, srv MachineInfoServer) {
-	s.RegisterService(&MachineInfo_ServiceDesc, srv)
+func RegisterRpcMachineInfoServer(s grpc.ServiceRegistrar, srv RpcMachineInfoServer) {
+	s.RegisterService(&RpcMachineInfo_ServiceDesc, srv)
 }
 
-func _MachineInfo_GetMachineInfo_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _RpcMachineInfo_GetMachineInfo_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(empty.Empty)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(MachineInfoServer).GetMachineInfo(ctx, in)
+		return srv.(RpcMachineInfoServer).GetMachineInfo(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/info.MachineInfo/GetMachineInfo",
+		FullMethod: "/info.RpcMachineInfo/GetMachineInfo",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MachineInfoServer).GetMachineInfo(ctx, req.(*empty.Empty))
+		return srv.(RpcMachineInfoServer).GetMachineInfo(ctx, req.(*empty.Empty))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-// MachineInfo_ServiceDesc is the grpc.ServiceDesc for MachineInfo service.
+// RpcMachineInfo_ServiceDesc is the grpc.ServiceDesc for RpcMachineInfo service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
-var MachineInfo_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "info.MachineInfo",
-	HandlerType: (*MachineInfoServer)(nil),
+var RpcMachineInfo_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "info.RpcMachineInfo",
+	HandlerType: (*RpcMachineInfoServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
 			MethodName: "GetMachineInfo",
-			Handler:    _MachineInfo_GetMachineInfo_Handler,
+			Handler:    _RpcMachineInfo_GetMachineInfo_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

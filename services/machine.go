@@ -3,7 +3,6 @@ package services
 import (
 	"context"
 	"fmt"
-	"kvm-dashboard/model"
 	"kvm-dashboard/rpc/rpc_client"
 	"kvm-dashboard/utils"
 
@@ -17,17 +16,17 @@ func (svc *Service) GetMachineList() {
 		utils.Log.Error(fmt.Sprintf("Failed to get machine info: %v", err))
 	}
 
-	respHostList := resp.HostInfo
-	hostInfoList := make([]*model.HostInfo, 0)
-	for _, hostInfo := range respHostList {
-		model.NewHost(
-			hostInfo.Name,
-			hostInfo.Uuid,
-			hostInfo.Ip,
-			hostInfo.SshPort,
-			hostInfo.Username,
-			host
-		)
-		utils.Log.Info(fmt.Sprintf("hostInfo %v", hostInfo))
-	}
+	resp = resp
+	// respHostList := resp.HostInfo
+	// hostInfoList := make([]*model.HostInfo, 0)
+	// for _, hostInfo := range respHostList {
+	// 	model.NewHost(
+	// 		hostInfo.Name,
+	// 		hostInfo.Uuid,
+	// 		hostInfo.Ip,
+	// 		hostInfo.SshPort,
+	// 		hostInfo.Username,
+	// 	)
+	// 	utils.Log.Info(fmt.Sprintf("hostInfo %v", hostInfo))
+	// }
 }

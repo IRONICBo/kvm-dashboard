@@ -11,8 +11,8 @@ import (
 )
 
 var RpcConn *Conn
-var MachineInfoClient info.MachineInfoClient
-var VMTHresholdClient threshold.VMTHresholdClient
+var MachineInfoClient info.RpcMachineInfoClient
+var VMTHresholdClient threshold.RpcDomainThvClient
 
 type Conn struct {
 	conn *grpc.ClientConn
@@ -30,8 +30,8 @@ func StartRpcClient(ip, port string) *Conn {
 
 	// init client
 	RpcConn = &Conn{conn: conn}
-	MachineInfoClient = info.NewMachineInfoClient(conn)
-	VMTHresholdClient = threshold.NewVMTHresholdClient(conn)
+	MachineInfoClient = info.NewRpcMachineInfoClient(conn)
+	VMTHresholdClient = threshold.NewRpcDomainThvClient(conn)
 
 	return RpcConn
 }

@@ -3,27 +3,25 @@ option go_package = "kvm-dashboard/rpc/internal/info;info";
 package info;
 import "google/protobuf/empty.proto";
 
-service MachineInfo {
-    rpc GetMachineInfo (google.protobuf.Empty) returns (GetMachineInfoResponse) {};
-}
-
 message GetMachineInfoResponse {
-    repeated HostInfo hostInfo = 1;
-    repeated VmInfo vmInfo = 2;
+  repeated HostInfo hostInfo = 1;
+  repeated VmInfo vmInfo = 2;
 }
-
 message HostInfo {
-    string name = 1;
-    string uuid = 2;
-    string ip = 3;
-    string sshPort = 4;
-    string qemuPort = 5;
-    string username = 6;
-    string passwd = 7;
+  string name = 1;
+  string uuid = 2;
+  string ip = 3;
+  string sshPort = 4;
+  string qemuPort = 5;
+  string username = 6;
+  string passwd = 7;
+}
+message VmInfo {
+  string name = 1;
+  string uuid = 2;
+  string hostId = 3;
 }
 
-message VmInfo {
-    string name = 1;
-    string uuid = 2;
-    string hostId = 3;
+service RpcMachineInfo {
+  rpc GetMachineInfo (google.protobuf.Empty) returns (GetMachineInfoResponse);
 }

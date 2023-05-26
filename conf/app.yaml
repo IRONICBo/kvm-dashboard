@@ -18,4 +18,4 @@ rpc:
     port: 50001
   client:
     host: localhost
-    port: 50002
+    port: 29090
