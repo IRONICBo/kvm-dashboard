@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 	"kvm-dashboard/consts"
-	"kvm-dashboard/rpc/internal/threshold"
+	"kvm-dashboard/rpc/api/threshold"
 	"kvm-dashboard/utils"
 	"net"
 	"strconv"

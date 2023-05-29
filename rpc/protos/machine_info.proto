@@ -1,6 +1,5 @@
 syntax="proto3";
 option go_package = "kvm-dashboard/rpc/internal/info;info";
-package info;
 import "google/protobuf/empty.proto";
 
 message GetMachineInfoResponse {

@@ -36,7 +36,7 @@ func NewRpcMachineInfoClient(cc grpc.ClientConnInterface) RpcMachineInfoClient {
 
 func (c *rpcMachineInfoClient) GetMachineInfo(ctx context.Context, in *empty.Empty, opts ...grpc.CallOption) (*GetMachineInfoResponse, error) {
 	out := new(GetMachineInfoResponse)
-	err := c.cc.Invoke(ctx, "/info.RpcMachineInfo/GetMachineInfo", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/RpcMachineInfo/GetMachineInfo", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -81,7 +81,7 @@ func _RpcMachineInfo_GetMachineInfo_Handler(srv interface{}, ctx context.Context
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/info.RpcMachineInfo/GetMachineInfo",
+		FullMethod: "/RpcMachineInfo/GetMachineInfo",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(RpcMachineInfoServer).GetMachineInfo(ctx, req.(*empty.Empty))
@@ -93,7 +93,7 @@ func _RpcMachineInfo_GetMachineInfo_Handler(srv interface{}, ctx context.Context
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var RpcMachineInfo_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "info.RpcMachineInfo",
+	ServiceName: "RpcMachineInfo",
 	HandlerType: (*RpcMachineInfoServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{

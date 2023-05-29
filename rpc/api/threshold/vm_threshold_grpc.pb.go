@@ -35,7 +35,7 @@ func NewRpcDomainThvClient(cc grpc.ClientConnInterface) RpcDomainThvClient {
 
 func (c *rpcDomainThvClient) GetDomainThv(ctx context.Context, in *GetDomainThvRequest, opts ...grpc.CallOption) (*GetDomainThvResponse, error) {
 	out := new(GetDomainThvResponse)
-	err := c.cc.Invoke(ctx, "/threshold.RpcDomainThv/GetDomainThv", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/RpcDomainThv/GetDomainThv", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -80,7 +80,7 @@ func _RpcDomainThv_GetDomainThv_Handler(srv interface{}, ctx context.Context, de
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/threshold.RpcDomainThv/GetDomainThv",
+		FullMethod: "/RpcDomainThv/GetDomainThv",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(RpcDomainThvServer).GetDomainThv(ctx, req.(*GetDomainThvRequest))
@@ -92,7 +92,7 @@ func _RpcDomainThv_GetDomainThv_Handler(srv interface{}, ctx context.Context, de
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var RpcDomainThv_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "threshold.RpcDomainThv",
+	ServiceName: "RpcDomainThv",
 	HandlerType: (*RpcDomainThvServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
@@ -121,7 +121,7 @@ func NewRpcSetDomainThvClient(cc grpc.ClientConnInterface) RpcSetDomainThvClient
 
 func (c *rpcSetDomainThvClient) SetDomainThv(ctx context.Context, in *SetDomainRequest, opts ...grpc.CallOption) (*SetDomainResponse, error) {
 	out := new(SetDomainResponse)
-	err := c.cc.Invoke(ctx, "/threshold.RpcSetDomainThv/SetDomainThv", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/RpcSetDomainThv/SetDomainThv", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -166,7 +166,7 @@ func _RpcSetDomainThv_SetDomainThv_Handler(srv interface{}, ctx context.Context,
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/threshold.RpcSetDomainThv/SetDomainThv",
+		FullMethod: "/RpcSetDomainThv/SetDomainThv",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(RpcSetDomainThvServer).SetDomainThv(ctx, req.(*SetDomainRequest))
@@ -178,7 +178,7 @@ func _RpcSetDomainThv_SetDomainThv_Handler(srv interface{}, ctx context.Context,
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var RpcSetDomainThv_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "threshold.RpcSetDomainThv",
+	ServiceName: "RpcSetDomainThv",
 	HandlerType: (*RpcSetDomainThvServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{

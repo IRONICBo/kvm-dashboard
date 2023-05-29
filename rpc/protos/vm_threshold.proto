@@ -1,6 +1,5 @@
 syntax="proto3";
 option go_package = "kvm-dashboard/rpc/internal/threshold;threshold";
-package threshold;
 
 message GetDomainThvRequest {
   string uuid = 1;

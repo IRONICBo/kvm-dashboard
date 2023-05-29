@@ -2,8 +2,8 @@ package rpc_client
 
 import (
 	"fmt"
-	"kvm-dashboard/rpc/internal/info"
-	"kvm-dashboard/rpc/internal/threshold"
+	"kvm-dashboard/rpc/api/info"
+	"kvm-dashboard/rpc/api/threshold"
 	"kvm-dashboard/utils"
 
 	"google.golang.org/grpc"
