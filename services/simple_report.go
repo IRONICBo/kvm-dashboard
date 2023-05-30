@@ -40,6 +40,37 @@ func (svc *Service) GetSimpleData(uuid, period, agg string, fields []string) []*
 	return res
 }
 
+func (svc *Service) StartHostSimpleReport(uuid string) error {
+	username := svc.GetMachineInfo(uuid).Username
+	password := svc.GetMachineInfo(uuid).Password
+	sshPort := svc.GetMachineInfo(uuid).SshPort
+	port, _ := strconv.Atoi(sshPort)
+	ip := svc.GetMachineInfo(uuid).Ip
+
+	simpleAgent, err := agent.NewSimpleAgent(
+		&agent.AgentInfo{
+			UUID:     uuid,
+			User:     username,
+			Password: password,
+			Ip:       ip,
+			Port:     uint(port),
+		},
+	)
+
+	if err != nil {
+		utils.Log.Error("Can not create simple agent", err)
+		return err
+	}
+
+	// 1. Start collect goroutine
+	simpleAgent.Start(uuid)
+
+	// 2. Start collect goroutine
+	go svc.saveAndReportSimpleData(simpleAgent, uuid)
+
+	return nil
+}
+
 // Start agent and report Simple data
 func (svc *Service) StartSimpleReport(uuid string) error {
 	// get ip address

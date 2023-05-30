@@ -18,6 +18,13 @@ func WebRouter(r *gin.Engine) {
 	HostInfo := kvm_dashboard_api.Group("/host")
 	{
 		HostInfo.GET("/basic", api.GetHostBasicInfo)
+
+		Control := HostInfo.Group("/control")
+		{
+			Control.GET("/start_report/ws", api.StartHostReport)
+			Control.GET("/stop_report/ws", api.StopHostReport)
+		}
+
 		Graph := HostInfo.Group("/graph")
 		{
 			Graph.POST("/workload/history", api.GetHostWorkloadHistoryStats)

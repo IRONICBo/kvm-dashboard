@@ -10,6 +10,38 @@ import (
 	"time"
 )
 
+func (svc *Service) StartHostProcessReport(uuid string) error {
+	// get ip address
+	username := svc.GetMachineInfo(uuid).Username
+	password := svc.GetMachineInfo(uuid).Password
+	sshPort := svc.GetMachineInfo(uuid).SshPort
+	port, _ := strconv.Atoi(sshPort)
+	ip := svc.GetMachineInfo(uuid).Ip
+
+	// get process agent
+	processAgent, err := agent.NewProcessAgent(
+		&agent.AgentInfo{
+			UUID:     uuid,
+			User:     username,
+			Password: password,
+			Ip:       ip,
+			Port:     uint(port),
+		},
+	)
+	if err != nil {
+		utils.Log.Error("Can not create process agent", err)
+		return err
+	}
+
+	// 1. start process agent
+	processAgent.Start(uuid)
+
+	// get process info
+	go svc.reportProcessData(processAgent, uuid)
+
+	return nil
+}
+
 func (svc *Service) StartProcessReport(uuid string) error {
 	// get ip address
 	vminfo := svc.GetVMInfo(uuid)
