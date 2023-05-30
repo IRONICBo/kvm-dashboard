@@ -38,7 +38,6 @@
 
 <script>
 import * as echarts from 'echarts';
-import { TEMPINFO } from '@/constant/constant';
 import { postSimpleHistory } from '@/api/history';
 
 
@@ -60,15 +59,15 @@ export default {
             0
         ]
     },
+    uuid: "",
   },
-  // props: ['realtimeInfoWithTimestamp'],
   data() {
     return {
       cpu_chart: null,
       mem_chart: null,
       disk_chart: null,
-      rx_rate: null,
-      tx_rate: null,
+      rx_chart: null,
+      tx_chart: null,
 
       historyInfo: {
         "cpu_usage": {
@@ -121,6 +120,16 @@ export default {
         this.updateEchartsOption(this.tx_chart, val.data[0].net_tx_rate);
       }
     },
+    uuid: {
+      immediate: true,
+      handler: function(val, oldVal) {
+        if (oldVal == null || val == null) {
+          return;
+        }
+
+        this.initGraph();
+      }
+    }
   },
   methods: {
     initGraph() {
@@ -174,8 +183,12 @@ export default {
       this.getHistoryInfo();
     },
     getHistoryInfo() {
+      if (this.uuid == null || this.uuid == "") {
+        return;
+      }
+
       let data = {
-        "UUID": TEMPINFO.uuid,
+        "UUID": this.uuid,
         "Fields": [
           "cpu_usage",
           "mem_usage",
@@ -269,7 +282,7 @@ export default {
     },
     padZero(value) {
       return String(value).padStart(2, '0'); // padding zero before single number
-    }
+    },
   }
 };
 </script>

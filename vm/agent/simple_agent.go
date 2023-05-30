@@ -143,7 +143,7 @@ func (sa *SimpleAgent) Start(uuid string) {
 
 				// send data
 				simpleData := data.NewSimpleData(cpuLoad, memLoad, diskLoad, rxRate, txRate)
-				utils.Log.Info(fmt.Sprintf("Simple data: %#v", simpleData))
+				// utils.Log.Info(fmt.Sprintf("Simple data: %#v", simpleData))
 				sa.SimpleData <- simpleData
 
 				// get next stat

@@ -24,11 +24,10 @@
   
 <script>
 import {ProcessWebSocket} from '@/api/realtime';
-import {TEMPINFO} from '@/constant/constant';
 
 export default {
   props: {
-
+    uuid: "",
   },
   data() {
     return {
@@ -36,14 +35,24 @@ export default {
       processData: [],
     }
   },
-  mounted() {
+  watch: {
+    uuid: {
+      immediate: true,
+      handler: function (val, oldVal) {
+        if (oldVal == null || val == null || val == "") {
+            return;
+        }
+        this.closeWebSocket();
         this.initWebSocket();
+      },
+    },
+  },
+  mounted() {
+        // this.initWebSocket();
   },
   unmounted() {
       // if the ws is null, can not use close method.
-      if (this.ws) {
-          this.ws.close();
-      }
+      this.closeWebSocket();
   },
   methods: {
     // ws
@@ -51,7 +60,7 @@ export default {
         if (typeof WebSocket === 'undefined') {
             return console.log('Your browser doesn\'t support WebSocket');
         }
-        this.ws = ProcessWebSocket(TEMPINFO.uuid);
+        this.ws = ProcessWebSocket(this.uuid);
         this.ws.onmessage = this.handleMessage;
         this.ws.onopen = this.handleOpen;
         this.ws.onclose = this.handleClose;
@@ -75,7 +84,15 @@ export default {
     },
     handleSend(data) {
         this.ws.send(data);
-    }
+    },
+    closeWebSocket() {
+        if (this.ws) {
+            this.ws.close();
+        }
+        
+        // clean data
+        this.processData = [];
+    },
   }
 }
 </script>

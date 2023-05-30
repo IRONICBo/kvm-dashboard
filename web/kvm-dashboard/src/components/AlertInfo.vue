@@ -21,6 +21,9 @@ import { TEMPINFO } from '@/constant/constant'
 import { postAlertHistory } from '@/api/history'
 
 export default ({
+  props: {
+    uuid: "",
+  },
   data() {
     return {
       tableData: [],
@@ -28,12 +31,23 @@ export default ({
     }
   },
   mounted() {
-    this.fetchData()
+    // this.fetchData()
+  },
+  watch: {
+    uuid: {
+      immediate: true,
+      handler: function (val, oldVal) {
+        if (oldVal == null || val == null || val == "") {
+            return;
+        }
+        this.fetchData();
+      }
+    }
   },
   methods: {
     handleCurrentChange(value) {
       let data = {
-        "UUID": TEMPINFO.uuid,
+        "UUID": this.uuid,
         "PageSize": TEMPINFO.page.pagesize,
         "Page": value,
       }
@@ -53,7 +67,7 @@ export default ({
     },
     fetchData() {
       let data = {
-        "UUID": TEMPINFO.uuid,
+        "UUID": this.uuid,
         "PageSize": TEMPINFO.page.pagesize,
         "Page": 1,
       }
@@ -65,7 +79,6 @@ export default ({
         })
 
         this.tableData = resp.data
-        console.log(resp.total)
         this.pageCount = resp.total
       })
       .catch((error) => {

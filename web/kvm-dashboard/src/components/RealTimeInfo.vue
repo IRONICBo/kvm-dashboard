@@ -33,11 +33,10 @@
   
 <script>
 import * as echarts from 'echarts';
-import { TEMPINFO } from '@/constant/constant';
 import { getVMThreshold } from '@/api/info';
 import { ElNotification } from 'element-plus';
 
-  
+
 export default {
     props: {
         realtimeInfo: {
@@ -47,6 +46,7 @@ export default {
             net_rx_rate: 0,
             net_tx_rate: 0,
         },
+        uuid: "",
     },
     data() {
         return {
@@ -76,7 +76,6 @@ export default {
                 this.updateEchartsOption(this.mem_chart, val.mem_usage, this.mem_usage_threshold);
                 this.updateEchartsOption(this.disk_chart, val.disk_usage, this.disk_usage_threshold);
 
-                console.log(this.cpu_usage_threshold)
                 // alert when usage > threshold
                 if (val.cpu_usage > this.cpu_usage_threshold) {
                     ElNotification({
@@ -101,12 +100,28 @@ export default {
                 }
             },
             // deep: true // watch object
-        }
+        },
+        uuid: {
+            immediate: true,
+            handler: function (val, oldVal) {
+                if (oldVal == null || val == null || val == "") {
+                    return;
+                }
+                this.initThreshold();
+                this.initGraph();
+                // clean data
+                this.realtimeInfo.net_rx_rate = 0;
+                this.realtimeInfo.net_tx_rate = 0;
+            },
+        },
     },
     methods: {
         initThreshold() {
-            getVMThreshold(TEMPINFO.uuid).then(res => {
-                console.log(res)
+            if (this.uuid == "") {
+                return;
+            }
+
+            getVMThreshold(this.uuid).then(res => {
                 let resp = res.data
                 this.cpu_usage_threshold = resp.cpu_usage_threshold;
                 this.mem_usage_threshold = resp.mem_usage_threshold;

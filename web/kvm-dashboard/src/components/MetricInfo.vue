@@ -52,13 +52,13 @@
   
   <script>
   import * as echarts from 'echarts';
-  import { TEMPINFO } from '@/constant/constant';
   import { ArrowDown } from '@element-plus/icons-vue'
   import { postMetricHistory, getMetricList  } from '@/api/history';
   
   
   export default {
     props: {
+      uuid: "",
     },
     data() {
       return {
@@ -95,6 +95,17 @@
         },
       },
       period: {
+        immediate: true,
+        handler: function (val, oldVal) {
+          if (oldVal == null || val == null) {
+              return;
+          }
+
+          // get history data
+          this.getHistoryInfo();
+        },
+      },
+      uuid: {
         immediate: true,
         handler: function (val, oldVal) {
           if (oldVal == null || val == null) {
@@ -167,8 +178,12 @@
         this.metric_chart.setOption(options);
       },
       getHistoryInfo() {
+        if (this.uuid == "" || this.metric == null || this.method == null || this.period == null) {
+          return; // not ready
+        }
+
         let data = {
-            "UUID": TEMPINFO.uuid,
+            "UUID": this.uuid,
             "Fields": [this.metric],
             "Period": this.period,
             "Func": this.method
@@ -176,7 +191,6 @@
         
         postMetricHistory(data)
           .then(response => {
-            console.log(response);
             let resp = response.data;
             for (let i = 0; i < resp.length; i++) {
               this.historyInfo = resp[i];

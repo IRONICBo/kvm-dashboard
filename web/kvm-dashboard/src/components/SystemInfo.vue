@@ -46,12 +46,14 @@ import VmStart from '@/assets/icons/VmStart';
 import VmStop from '@/assets/icons/VmStop';
 
 import { getVMInfo } from '@/api/info';
-import { TEMPINFO } from '@/constant/constant';
 import { StartWebSocket, StopWebSocket, SuspendWebSocket, ResumeWebSocket } from '@/api/control';
 
 import { ElNotification,ElProgress } from 'element-plus';
 
 export default {
+    props: {
+        uuid: "",
+    },
     data() {
         return {
             hostInfo: {},
@@ -76,15 +78,28 @@ export default {
             },
         }
     },
-    props: {
-        UUID: "",
+    watch: {
+      uuid: {
+        immediate: true,
+        handler: function (val, oldVal) {
+          console.log("watch uuid", val, oldVal)
+          if (oldVal == null || val == null || val == "") {
+              return;
+          }
+          this.fetchVMInfo();
+        },
+      },
     },
     mounted() {
-      this.fetchVMInfo();
+      // this.fetchVMInfo();
     },
     methods: {
       fetchVMInfo() {
-        getVMInfo(TEMPINFO.uuid)
+        if (this.uuid == "") {
+          return;
+        }
+
+        getVMInfo(this.uuid)
         .then(response => {
             this.vmInfo = response.data;
             // render
@@ -106,10 +121,14 @@ export default {
         this.initWebSocket(ResumeWebSocket);
       },
       initWebSocket(socket) {
+        if (this.uuid == "") {
+          return;
+        }
+
         if (typeof WebSocket === 'undefined') {
             return console.log('Your browser doesn\'t support WebSocket');
         }
-        this.ws = socket(TEMPINFO.uuid);
+        this.ws = socket(this.uuid);
         this.ws.onmessage = this.handleMessage;
         this.ws.onopen = this.handleOpen;
         this.ws.onclose = this.handleClose;

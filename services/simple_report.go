@@ -87,7 +87,7 @@ func (svc *Service) saveAndReportSimpleData(agent *agent.SimpleAgent, uuid strin
 			simpleJson := string(simpleJsonByte)
 			err = ws.SimpleWSServer.WriteData(uuid, simpleJson)
 			if err != nil {
-				utils.Log.Error("Can not write simple data to ws", err)
+				utils.Log.Debug("Can not find/write simple data to ws", err)
 			}
 
 			// alert data

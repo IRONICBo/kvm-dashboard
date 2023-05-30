@@ -6,19 +6,29 @@
       </el-header>
       <el-container>
         <el-aside style="width: 250px; height: 94vh;">
-          <Aside />
+          <Aside @updateUUID="updateUUID" />
         </el-aside>
         <el-main style="height:94vh">
-          <system-info></system-info>
-          <real-time-info :realtimeInfo="realtimeInfo"></real-time-info>
-          <metric-info></metric-info>
-          <history-info :realtimeInfoWithTimestamp="realtimeInfoWithTimestamp"></history-info>
+          <system-info
+            :uuid="uuid" ></system-info>
+          <real-time-info 
+            :realtimeInfo="realtimeInfo"
+            :uuid="uuid" ></real-time-info>
+          <metric-info
+            :key="uuid"
+            :uuid="uuid" ></metric-info>
+          <history-info 
+            :key="uuid"
+            :realtimeInfoWithTimestamp="realtimeInfoWithTimestamp"
+            :uuid="uuid" ></history-info>
           <el-row :gutter="20">
             <el-col :span="16">
-              <process-info></process-info>
+              <process-info
+                :uuid="uuid" ></process-info>
             </el-col>
             <el-col :span="8">
-              <alert-info></alert-info>
+              <alert-info
+                :uuid="uuid" ></alert-info>
             </el-col>
           </el-row>
         </el-main>
@@ -38,7 +48,6 @@ import SystemInfo from '@/components/SystemInfo.vue'
 import MetricInfo from '@/components/MetricInfo.vue'
 
 import {SimpleWebSocket} from '@/api/realtime';
-import {TEMPINFO} from '@/constant/constant';
 
 export default {
   components: { 
@@ -76,10 +85,22 @@ export default {
           net_rx_rate: 0,
           net_tx_rate: 0,
       },
+      uuid: "",
     }
   },
+  watch: {
+    uuid: {
+      immediate: true,
+      handler: function (val, oldVal) {
+        if (oldVal == null || val == null || val == "") {
+            return;
+        }
+        this.closeWebSocket();
+        this.initWebSocket();
+      },
+    },
+  },
   mounted() {
-      this.initWebSocket();
   },
   unmounted() {
     // if the ws is null, can not use close method.
@@ -93,7 +114,7 @@ export default {
         if (typeof WebSocket === 'undefined') {
             return console.log('Your browser doesn\'t support WebSocket');
         }
-        this.ws = SimpleWebSocket(TEMPINFO.uuid);
+        this.ws = SimpleWebSocket(this.uuid);
         this.ws.onmessage = this.handleMessage;
         this.ws.onopen = this.handleOpen;
         this.ws.onclose = this.handleClose;
@@ -121,6 +142,14 @@ export default {
     },
     handleSend(data) {
         this.ws.send(data);
+    },
+    closeWebSocket() {
+        if (this.ws) {
+            this.ws.close();
+        }
+    },
+    updateUUID(data) {
+      this.uuid = data;
     }
   }
 }
