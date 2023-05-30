@@ -1,7 +1,5 @@
 package consts
 
-import "kvm-dashboard/model"
-
 const (
 	// LIBVIRT_URL    = "qemu:///system"
 	LIBVIRT_URL    = "qemu+tcp://localhost:16509/system" // default url
@@ -42,19 +40,3 @@ const (
 	SIMPLE_MEASUREMENT = "simple"
 	ALERT_MEASUREMENT  = "alert"
 )
-
-// Unit
-var (
-	// todo: add index unit
-	UNIT = map[string]string{}
-)
-
-var (
-	VM_THRESHOLD         = map[string]*model.Threshold{}
-	CPU_USAGE_THRESHOLD  = 80
-	MEM_USAGE_THRESHOLD  = 80
-	DISK_USAGE_THRESHOLD = 80
-)
-
-// Realtime data
-var ()

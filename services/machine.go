@@ -75,8 +75,8 @@ func (svc *Service) GetMachineList() (*model.MachineInfo, error) {
 	if err != nil {
 		utils.Log.Error(fmt.Sprintf("Failed to get machine info: %v", err))
 		return model.NewMachineInfo(
-			make([]*model.Host, 0),
-			make([]*model.Vm, 0)), err
+			make([]*model.Machine, 0),
+			make([]*model.Machine, 0)), err
 	}
 
 	hostInfos := resp.HostInfo
@@ -85,9 +85,9 @@ func (svc *Service) GetMachineList() (*model.MachineInfo, error) {
 	// temp hostinfo map for vm
 	hostInfoMap := make(map[string]*info.HostInfo) // machine info in grpc
 
-	hosts := make([]*model.Host, 0)
+	hosts := make([]*model.Machine, 0)
 	for _, hostInfo := range hostInfos {
-		host := model.NewHost(
+		host := model.NewMachine(
 			hostInfo.Name,
 			hostInfo.Uuid,
 			hostInfo.Ip,
@@ -102,11 +102,11 @@ func (svc *Service) GetMachineList() (*model.MachineInfo, error) {
 		hostInfoMap[hostInfo.Uuid] = hostInfo
 	}
 
-	vms := make([]*model.Vm, 0)
+	vms := make([]*model.Machine, 0)
 	for _, vmInfo := range vmInfos {
 		hostInfo := hostInfoMap[vmInfo.HostId]
 
-		vm := model.NewVm(
+		vm := model.NewMachine(
 			vmInfo.Name,
 			vmInfo.Uuid,
 			"",
