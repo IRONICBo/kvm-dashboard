@@ -12,6 +12,7 @@ func WebRouter(r *gin.Engine) {
 	MachineInfo := kvm_dashboard_api.Group("/machine")
 	{
 		MachineInfo.GET("/list", api.GetMachineList)
+		MachineInfo.GET("/threshold", api.GetMachineThreshold)
 	}
 
 	HostInfo := kvm_dashboard_api.Group("/host")

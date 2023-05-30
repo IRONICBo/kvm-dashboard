@@ -105,7 +105,12 @@ func (svc *Service) saveAndReportSimpleData(agent *agent.SimpleAgent, uuid strin
 }
 
 func (svc *Service) alertSimpleData(simpleData *data.SimpleData, uuid string) error {
-	if int(simpleData.CPUUsage) > consts.CPU_USAGE_THRESHOLD {
+	if consts.VM_THRESHOLD[uuid] == nil {
+		svc.GetMachineThreshold(uuid)
+	}
+
+	cpuUsageThreshold := consts.VM_THRESHOLD[uuid].CpuUsageThreshold
+	if int(simpleData.CPUUsage) > cpuUsageThreshold {
 		alertData := map[string]interface{}{
 			"cpu_usage": simpleData.CPUUsage,
 		}
@@ -120,7 +125,8 @@ func (svc *Service) alertSimpleData(simpleData *data.SimpleData, uuid string) er
 		}
 	}
 
-	if int(simpleData.MemUsage) > consts.MEM_USAGE_THRESHOLD {
+	memUsageThreshold := consts.VM_THRESHOLD[uuid].MemUsageThreshold
+	if int(simpleData.MemUsage) > memUsageThreshold {
 		alertData := map[string]interface{}{
 			"mem_usage": simpleData.MemUsage,
 		}
@@ -135,7 +141,8 @@ func (svc *Service) alertSimpleData(simpleData *data.SimpleData, uuid string) er
 		}
 	}
 
-	if int(simpleData.DiskUsage) > consts.DISK_USAGE_THRESHOLD {
+	diskUsageThreshold := consts.VM_THRESHOLD[uuid].DiskUsageThreshold
+	if int(simpleData.DiskUsage) > diskUsageThreshold {
 		alertData := map[string]interface{}{
 			"disk_usage": simpleData.DiskUsage,
 		}

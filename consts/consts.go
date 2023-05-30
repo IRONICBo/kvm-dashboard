@@ -1,5 +1,7 @@
 package consts
 
+import "kvm-dashboard/model"
+
 const (
 	// LIBVIRT_URL    = "qemu:///system"
 	LIBVIRT_URL    = "qemu+tcp://localhost:16509/system" // default url
@@ -47,15 +49,8 @@ var (
 	UNIT = map[string]string{}
 )
 
-// Threshold
-type Threshold struct {
-	CpuUsageThreshold  int `json:"cpu_usage_threshold"`
-	MemUsageThreshold  int `json:"mem_usage_threshold"`
-	DiskUsageThreshold int `json:"disk_usage_threshold"`
-}
-
 var (
-	VM_THRESHOLD         = map[string]Threshold{}
+	VM_THRESHOLD         = map[string]*model.Threshold{}
 	CPU_USAGE_THRESHOLD  = 80
 	MEM_USAGE_THRESHOLD  = 80
 	DISK_USAGE_THRESHOLD = 80

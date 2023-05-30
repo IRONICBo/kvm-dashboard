@@ -55,3 +55,18 @@ func NewVm(name, uuid, ip, sshPort, libvirtUrl, username, password string) *Vm {
 		Password:   password,
 	}
 }
+
+// Threshold
+type Threshold struct {
+	CpuUsageThreshold  int `json:"cpu_usage_threshold"`
+	MemUsageThreshold  int `json:"mem_usage_threshold"`
+	DiskUsageThreshold int `json:"disk_usage_threshold"`
+}
+
+func NewThreshold(cpuUsageThreshold, memUsageThreshold, diskUsageThreshold int) *Threshold {
+	return &Threshold{
+		CpuUsageThreshold:  cpuUsageThreshold,
+		MemUsageThreshold:  memUsageThreshold,
+		DiskUsageThreshold: diskUsageThreshold,
+	}
+}

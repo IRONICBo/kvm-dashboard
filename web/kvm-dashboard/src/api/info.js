@@ -7,3 +7,7 @@ export const getVMInfo = (uuid) => {
 export const getHostInfo = () => {
     return request(`/api/host/basic`, 'get')
 }
+
+export const getVMThreshold = (uuid) => {
+    return request(`/api/machine/threshold?UUID=${uuid}`, 'get')
+}

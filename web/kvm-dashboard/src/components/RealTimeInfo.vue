@@ -33,7 +33,8 @@
   
 <script>
 import * as echarts from 'echarts';
-import {TEMPINFO} from '@/constant/constant';
+import { TEMPINFO } from '@/constant/constant';
+import { getVMThreshold } from '@/api/info';
 import { ElNotification } from 'element-plus';
 
   
@@ -53,10 +54,14 @@ export default {
             cpu_chart: null,
             mem_chart: null,
             disk_chart: null,
+            cpu_usage_threshold: 80,
+            mem_usage_threshold: 80,
+            disk_usage_threshold: 80,
         }
     },
     mounted() {
         this.initGraph();
+        this.initThreshold();
     },
     unmounted() {
     },
@@ -67,26 +72,27 @@ export default {
                 if (oldVal == null || val == null) {
                     return;
                 }
-                this.updateEchartsOption(this.cpu_chart, val.cpu_usage, TEMPINFO.threshold.cpu_usage);
-                this.updateEchartsOption(this.mem_chart, val.mem_usage, TEMPINFO.threshold.mem_usage);
-                this.updateEchartsOption(this.disk_chart, val.disk_usage, TEMPINFO.threshold.disk_usage);
+                this.updateEchartsOption(this.cpu_chart, val.cpu_usage, this.cpu_usage_threshold);
+                this.updateEchartsOption(this.mem_chart, val.mem_usage, this.mem_usage_threshold);
+                this.updateEchartsOption(this.disk_chart, val.disk_usage, this.disk_usage_threshold);
 
+                console.log(this.cpu_usage_threshold)
                 // alert when usage > threshold
-                if (val.cpu_usage > TEMPINFO.threshold.cpu_usage) {
+                if (val.cpu_usage > this.cpu_usage_threshold) {
                     ElNotification({
                         title: 'CPU Usage Alert',
                         message: `CPU Usage: ${val.cpu_usage}%`,
                         type: 'warning'
                     });
                 }
-                if (val.mem_usage > TEMPINFO.threshold.mem_usage) {
+                if (val.mem_usage > this.mem_usage_threshold) {
                     ElNotification({
                         title: 'Memory Usage Alert',
                         message: `Memory Usage: ${val.mem_usage}%`,
                         type: 'warning'
                     });
                 }
-                if (val.disk_usage > TEMPINFO.threshold.disk_usage) {
+                if (val.disk_usage > this.disk_usage_threshold) {
                     ElNotification({
                         title: 'Disk Usage Alert',
                         message: `Disk Usage: ${val.disk_usage}%`,
@@ -98,6 +104,17 @@ export default {
         }
     },
     methods: {
+        initThreshold() {
+            getVMThreshold(TEMPINFO.uuid).then(res => {
+                console.log(res)
+                let resp = res.data
+                this.cpu_usage_threshold = resp.cpu_usage_threshold;
+                this.mem_usage_threshold = resp.mem_usage_threshold;
+                this.disk_usage_threshold = resp.disk_usage_threshold;
+            }).catch(err => {
+                console.log(err);
+            });
+        },
         initGraph() {
             // load chart
             this.cpu_chart = echarts.init(this.$refs.cpu_load);
