@@ -3,25 +3,29 @@ package services
 import (
 	"encoding/json"
 	"fmt"
-	"kvm-dashboard/consts"
 	"kvm-dashboard/router/ws"
 	"kvm-dashboard/utils"
 	"kvm-dashboard/vm/agent"
+	"strconv"
 	"time"
 )
 
 func (svc *Service) StartProcessReport(uuid string) error {
 	// get ip address
 	vminfo := svc.GetVMInfo(uuid)
+	username := svc.GetMachineInfo(uuid).Username
+	password := svc.GetMachineInfo(uuid).Password
+	sshPort := svc.GetMachineInfo(uuid).SshPort
+	port, _ := strconv.Atoi(sshPort)
 
 	// get process agent
 	processAgent, err := agent.NewProcessAgent(
 		&agent.AgentInfo{
 			UUID:     uuid,
-			User:     consts.USERNAME,
-			Password: consts.PASSWORD,
+			User:     username,
+			Password: password,
 			Ip:       vminfo.IpAddress,
-			Port:     consts.PORT,
+			Port:     uint(port),
 		},
 	)
 	if err != nil {
@@ -58,7 +62,7 @@ func (svc *Service) reportProcessData(agent *agent.ProcessAgent, uuid string) {
 			// write to ws
 			err = ws.ProcessWSServer.WriteData(uuid, processJson)
 			if err != nil {
-				utils.Log.Error("Can not write process data to ws", err)
+				utils.Log.Debug("Can not write process data to ws", err)
 			}
 		}
 	}

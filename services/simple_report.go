@@ -9,6 +9,7 @@ import (
 	"kvm-dashboard/utils"
 	"kvm-dashboard/vm/agent"
 	"kvm-dashboard/vm/data"
+	"strconv"
 	"time"
 )
 
@@ -43,14 +44,18 @@ func (svc *Service) GetSimpleData(uuid, period, agg string, fields []string) []*
 func (svc *Service) StartSimpleReport(uuid string) error {
 	// get ip address
 	vminfo := svc.GetVMInfo(uuid)
+	username := svc.GetMachineInfo(uuid).Username
+	password := svc.GetMachineInfo(uuid).Password
+	sshPort := svc.GetMachineInfo(uuid).SshPort
+	port, _ := strconv.Atoi(sshPort)
 
 	simpleAgent, err := agent.NewSimpleAgent(
 		&agent.AgentInfo{
 			UUID:     uuid,
-			User:     consts.USERNAME,
-			Password: consts.PASSWORD,
+			User:     username,
+			Password: password,
 			Ip:       vminfo.IpAddress,
-			Port:     consts.PORT,
+			Port:     uint(port),
 		},
 	)
 

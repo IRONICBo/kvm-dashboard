@@ -1,7 +1,6 @@
 package api
 
 import (
-	"kvm-dashboard/consts"
 	"kvm-dashboard/model"
 	"kvm-dashboard/router/param"
 	"kvm-dashboard/router/ws"
@@ -93,7 +92,9 @@ func startAllReport(svc *services.Service, uuid string) {
 	ws.ControlWSServer.WriteData(uuid, state)
 
 	// 3
-	err := svc.StartVMReport(consts.LIBVIRT_URL, uuid)
+	// get url from config
+	libvirtURL := svc.GetMachineInfo(uuid).LibvirtUrl
+	err := svc.StartVMReport(libvirtURL, uuid)
 	if err != nil {
 		utils.Log.Error("Can not start vm report", err)
 		state := model.NewProgressJson(uuid, 100, err.Error(), false)
@@ -187,7 +188,9 @@ func stopAllReport(svc *services.Service, uuid string) {
 	ws.ControlWSServer.WriteData(uuid, state)
 
 	// 3
-	err := svc.StopVMReport(consts.LIBVIRT_URL, uuid)
+	// get url from config
+	libvirtURL := svc.GetMachineInfo(uuid).LibvirtUrl
+	err := svc.StopVMReport(libvirtURL, uuid)
 	if err != nil {
 		utils.Log.Error("Can not stop vm report", err)
 		state := model.NewProgressJson(uuid, 100, err.Error(), false)

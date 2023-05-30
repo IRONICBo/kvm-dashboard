@@ -118,6 +118,39 @@ func (svc *Service) GetMachineList() (*model.MachineInfo, error) {
 		vms = append(vms, vm)
 	}
 
+	updateMachineInfo(hosts, vms)
 	machineInfo := model.NewMachineInfo(hosts, vms)
 	return machineInfo, nil
+}
+
+func updateMachineInfo(hosts []*model.Machine, vms []*model.Machine) {
+	// clean machine map
+	consts.MACHINE_MAP = make(map[string]*model.Machine)
+
+	// update hosts
+	for _, host := range hosts {
+		consts.MACHINE_MAP[host.Uuid] = host
+	}
+
+	// update vms
+	for _, vm := range vms {
+		consts.MACHINE_MAP[vm.Uuid] = vm
+	}
+}
+
+func (svc *Service) GetMachineInfo(uuid string) *model.Machine {
+	if machine, ok := consts.MACHINE_MAP[uuid]; ok {
+		return machine
+	}
+
+	// return a default machine
+	return model.NewMachine(
+		"default for golang xxx",
+		uuid,
+		"",
+		fmt.Sprintf("%d", consts.PORT),
+		consts.LIBVIRT_URL,
+		consts.USERNAME,
+		consts.PASSWORD,
+	)
 }

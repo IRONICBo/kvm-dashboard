@@ -1,13 +1,13 @@
 package services
 
 import (
-	"kvm-dashboard/consts"
 	"kvm-dashboard/utils"
 	"kvm-dashboard/vm/agent"
 )
 
-func (s *Service) StartVM(uuid string) error {
-	libvirtAgent, err := agent.NewLibvirtAgent(consts.LIBVIRT_URL)
+func (svc *Service) StartVM(uuid string) error {
+	libvirtURL := svc.GetMachineInfo(uuid).LibvirtUrl
+	libvirtAgent, err := agent.NewLibvirtAgent(libvirtURL)
 	if err != nil {
 		utils.Log.Error("Can not create libvirt agent", err)
 		return err
@@ -22,8 +22,9 @@ func (s *Service) StartVM(uuid string) error {
 	return nil
 }
 
-func (s *Service) StopVM(uuid string) error {
-	libvirtAgent, err := agent.NewLibvirtAgent(consts.LIBVIRT_URL)
+func (svc *Service) StopVM(uuid string) error {
+	libvirtURL := svc.GetMachineInfo(uuid).LibvirtUrl
+	libvirtAgent, err := agent.NewLibvirtAgent(libvirtURL)
 	if err != nil {
 		utils.Log.Error("Can not create libvirt agent", err)
 		return err
@@ -38,8 +39,9 @@ func (s *Service) StopVM(uuid string) error {
 	return nil
 }
 
-func (s *Service) SuspendVM(uuid string) error {
-	libvirtAgent, err := agent.NewLibvirtAgent(consts.LIBVIRT_URL)
+func (svc *Service) SuspendVM(uuid string) error {
+	libvirtURL := svc.GetMachineInfo(uuid).LibvirtUrl
+	libvirtAgent, err := agent.NewLibvirtAgent(libvirtURL)
 	if err != nil {
 		utils.Log.Error("Can not create libvirt agent", err)
 		return err
@@ -54,8 +56,9 @@ func (s *Service) SuspendVM(uuid string) error {
 	return nil
 }
 
-func (s *Service) ResumeVM(uuid string) error {
-	libvirtAgent, err := agent.NewLibvirtAgent(consts.LIBVIRT_URL)
+func (svc *Service) ResumeVM(uuid string) error {
+	libvirtURL := svc.GetMachineInfo(uuid).LibvirtUrl
+	libvirtAgent, err := agent.NewLibvirtAgent(libvirtURL)
 	if err != nil {
 		utils.Log.Error("Can not create libvirt agent", err)
 		return err

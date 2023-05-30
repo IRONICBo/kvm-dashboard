@@ -1,7 +1,6 @@
 package services
 
 import (
-	"kvm-dashboard/consts"
 	"kvm-dashboard/model"
 	"kvm-dashboard/utils"
 	"kvm-dashboard/vm/agent"
@@ -64,7 +63,8 @@ func (svc *Service) GetHostInfo() *model.HostInfo {
 func (svc *Service) GetVMInfo(uuid string) *model.VMInfo {
 	vmInfo := &model.VMInfo{}
 
-	libvirtAgent, err := agent.NewLibvirtAgent(consts.LIBVIRT_URL)
+	libvirtURL := svc.GetMachineInfo(uuid).LibvirtUrl
+	libvirtAgent, err := agent.NewLibvirtAgent(libvirtURL)
 	if err != nil {
 		utils.Log.Error("Can not create libvirt agent", err)
 		return vmInfo
