@@ -136,7 +136,7 @@ func (sa *SimpleAgent) Start(uuid string) {
 					// utils.Log.Error(fmt.Sprintf("Can not get next proc stat result on vm: %#v", sa.AgentInfo), err)
 
 					// use default interface
-					netPrev, err = vm_utils.GetCommandOutput(sa.conn, "ip", "-s link show")
+					netCurrent, err = vm_utils.GetCommandOutput(sa.conn, "ip", "-s link show")
 					if err != nil {
 						utils.Log.Error(fmt.Sprintf("Can not get next proc stat result on vm: %#v", sa.AgentInfo), err)
 						return
