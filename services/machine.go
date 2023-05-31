@@ -139,6 +139,14 @@ func updateMachineInfo(hosts []*model.Machine, vms []*model.Machine) {
 }
 
 func (svc *Service) GetMachineInfo(uuid string) *model.Machine {
+	// if the MACHINE_MAP is empty, try to get machine list
+	if len(consts.MACHINE_MAP) == 0 {
+		_, err := svc.GetMachineList()
+		if err != nil {
+			utils.Log.Error(fmt.Sprintf("Failed to get machine info: %v", err))
+		}
+	}
+
 	if machine, ok := consts.MACHINE_MAP[uuid]; ok {
 		return machine
 	}

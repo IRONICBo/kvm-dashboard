@@ -31,6 +31,8 @@ func (svc *Service) GetHostInfo(uuid string) *model.HostInfo {
 			Auth:     goph.Password(password),
 			Callback: ssh.InsecureIgnoreHostKey(), // set unknown host key callback
 		})
+
+	// utils.Log.Info(fmt.Sprintf("username: %s, password: %s, sshPort: %s, ip: %s", username, password, sshPort, ip))
 	if err != nil {
 		utils.Log.Error(fmt.Sprintf("Can not connect to host: %#v", ip), err)
 		return hostInfo
