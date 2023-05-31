@@ -1,39 +1,57 @@
 package services
 
 import (
+	"fmt"
 	"kvm-dashboard/model"
 	"kvm-dashboard/utils"
 	"kvm-dashboard/vm/agent"
-	"os/exec"
 	"strconv"
 	"strings"
 
+	"github.com/melbahja/goph"
+	"golang.org/x/crypto/ssh"
 	"libvirt.org/libvirt-go"
 )
 
 // todo: use ssh to get host info
-func (svc *Service) GetHostInfo() *model.HostInfo {
+func (svc *Service) GetHostInfo(uuid string) *model.HostInfo {
 	hostInfo := &model.HostInfo{}
 
+	username := svc.GetMachineInfo(uuid).Username
+	password := svc.GetMachineInfo(uuid).Password
+	sshPort := svc.GetMachineInfo(uuid).SshPort
+	port, _ := strconv.Atoi(sshPort)
+	ip := svc.GetMachineInfo(uuid).Ip
+
+	conn, err := goph.NewConn(
+		&goph.Config{
+			User:     username,
+			Addr:     ip,
+			Port:     uint(port),
+			Auth:     goph.Password(password),
+			Callback: ssh.InsecureIgnoreHostKey(), // set unknown host key callback
+		})
+	if err != nil {
+		utils.Log.Error(fmt.Sprintf("Can not connect to host: %#v", ip), err)
+		return hostInfo
+	}
+
 	// get host name
-	hostnameCmd := exec.Command("hostname")
-	hostnameOutput, err := hostnameCmd.Output()
+	hostnameOutput, err := utils.GetCommandOutput(conn, "hostname")
 	if err != nil {
 		utils.Log.Error("Error executing hostname command:", err)
 	}
 	hostInfo.Hostname = strings.TrimSuffix(string(hostnameOutput), "\n")
 
 	// get os type
-	unameCmd := exec.Command("uname", "-a")
-	unameOutput, err := unameCmd.Output()
+	unameOutput, err := utils.GetCommandOutput(conn, "uname", "-a")
 	if err != nil {
 		utils.Log.Error("Error executing uname command:", err)
 	}
 	hostInfo.OsType = strings.Split(string(unameOutput), " ")[2]
 
 	// get cpu num
-	cpuNumCmd := exec.Command("cat", "/proc/cpuinfo")
-	cpuNumOutput, err := cpuNumCmd.Output()
+	cpuNumOutput, err := utils.GetCommandOutput(conn, "cat", "/proc/cpuinfo")
 	if err != nil {
 		utils.Log.Error("Error executing cat /proc/cpuinfo command:", err)
 	}
@@ -44,8 +62,7 @@ func (svc *Service) GetHostInfo() *model.HostInfo {
 	hostInfo.CPUName = strings.TrimSpace(strings.Split(cpuName, ":")[1])
 
 	// get max mem
-	memCmd := exec.Command("cat", "/proc/meminfo")
-	memOutput, err := memCmd.Output()
+	memOutput, err := utils.GetCommandOutput(conn, "cat", "/proc/meminfo")
 	if err != nil {
 		utils.Log.Error("Error executing cat /proc/meminfo command:", err)
 	}

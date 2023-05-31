@@ -10,8 +10,15 @@ import (
 )
 
 func GetHostBasicInfo(c *gin.Context) {
+	param := &param.HostArgument{}
+	err := c.ShouldBindQuery(param)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, model.FailedWithMsg(err.Error()))
+		return
+	}
+
 	svc := services.NewService()
-	hostInfo := svc.GetHostInfo()
+	hostInfo := svc.GetHostInfo(param.UUID)
 
 	// todo: need to reconstruct
 	c.JSON(http.StatusOK, model.SuccessWithData(hostInfo))

@@ -4,8 +4,8 @@ export const getVMInfo = (uuid) => {
     return request(`/api/vm/basic?UUID=${uuid}`,'get')
 }
 
-export const getHostInfo = () => {
-    return request(`/api/host/basic`, 'get')
+export const getHostInfo = (uuid) => {
+    return request(`/api/host/basic?UUID=${uuid}`, 'get')
 }
 
 export const getVMThreshold = (uuid) => {
