@@ -31,7 +31,7 @@ export default ({
     }
   },
   mounted() {
-    // this.fetchData()
+    this.fetchData()
   },
   watch: {
     uuid: {
@@ -66,6 +66,10 @@ export default ({
       })
     },
     fetchData() {
+      if (this.uuid == null || this.uuid == "") {
+        return;
+      }
+
       let data = {
         "UUID": this.uuid,
         "PageSize": TEMPINFO.page.pagesize,

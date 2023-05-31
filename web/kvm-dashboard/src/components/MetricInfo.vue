@@ -120,6 +120,7 @@
     mounted() {
         this.initOptions();
         this.initGraph();
+        this.getHistoryInfo();
     },
     methods: {
       selectMetrics(m) {
@@ -178,7 +179,7 @@
         this.metric_chart.setOption(options);
       },
       getHistoryInfo() {
-        if (this.uuid == "" || this.metric == null || this.method == null || this.period == null) {
+        if (this.uuid == null || this.uuid == "" || this.metric == null || this.method == null || this.period == null) {
           return; // not ready
         }
 

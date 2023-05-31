@@ -9,12 +9,18 @@
           <Aside @updateUUID="updateUUID" />
         </el-aside>
         <el-main style="height:94vh">
-          <system-info
+          <system-info 
+            v-if="!isHost"
             :uuid="uuid" ></system-info>
+          <host-system-info 
+            v-if="isHost"
+            :uuid="uuid" ></host-system-info>
           <real-time-info 
             :realtimeInfo="realtimeInfo"
-            :uuid="uuid" ></real-time-info>
+            :uuid="uuid"
+            :isHost="isHost"></real-time-info>
           <metric-info
+            v-if="!isHost"
             :key="uuid"
             :uuid="uuid" ></metric-info>
           <history-info 
@@ -45,6 +51,7 @@ import AlertInfo from '@/components/AlertInfo.vue'
 import Header from '@/components/Header.vue'
 import Aside from '@/components/Aside.vue'
 import SystemInfo from '@/components/SystemInfo.vue'
+import HostSystemInfo from '@/components/HostSystemInfo.vue'
 import MetricInfo from '@/components/MetricInfo.vue'
 
 import {SimpleWebSocket} from '@/api/realtime';
@@ -58,6 +65,7 @@ export default {
     ProcessInfo,
     AlertInfo,
     SystemInfo,
+    HostSystemInfo,
     MetricInfo,
   },
   data() {
@@ -86,6 +94,7 @@ export default {
           net_tx_rate: 0,
       },
       uuid: "",
+      isHost: false,
     }
   },
   watch: {
@@ -148,8 +157,10 @@ export default {
             this.ws.close();
         }
     },
-    updateUUID(data) {
+    updateUUID(data, isHost) {
       this.uuid = data;
+      this.isHost = isHost;
+      console.log("updateUUID", data, isHost)
     }
   }
 }

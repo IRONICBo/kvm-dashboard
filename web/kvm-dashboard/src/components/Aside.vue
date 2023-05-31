@@ -11,7 +11,7 @@
               v-for="(item, idx) in HostList" 
               :key="item" 
               :index="'host-' + idx"
-              @click="changeItem(item.uuid)" >{{ item.name }}</el-menu-item>
+              @click="changeItem(item.uuid, true)" >{{ item.name }}</el-menu-item>
         </el-sub-menu>
         <el-sub-menu index="2">
             <template #title>
@@ -22,7 +22,7 @@
               v-for="(item, idx) in VmList" 
               :key="item" 
               :index="'vm-' + idx"
-              @click="changeItem(item.uuid)" >{{ item.name }}</el-menu-item>
+              @click="changeItem(item.uuid, false)" >{{ item.name }}</el-menu-item>
         </el-sub-menu>
     </el-menu>
   </el-scrollbar>
@@ -70,8 +70,8 @@ export default {
         console.log(error)
       })
     },
-    changeItem(uuid) {
-      this.$emit('updateUUID', uuid);
+    changeItem(uuid, isHost) {
+      this.$emit('updateUUID', uuid, isHost);
     }
   }
 }

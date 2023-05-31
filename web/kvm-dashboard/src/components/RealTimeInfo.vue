@@ -177,7 +177,7 @@ export default {
         },
         updateEchartsOption(chart, usage, threshold=80) {
             const data = [
-                { value: usage, name: 'usage', itemStyle: { color: usage < threshold ? '#67C23A' : '#F56C6C'}},
+                { value: usage, name: 'usage', itemStyle: { color: usage <= threshold ? '#67C23A' : '#F56C6C'}},
                 { value: 100 - usage, name: 'free', itemStyle: { color: '#e1f3d8' }}
             ];
             chart.setOption({

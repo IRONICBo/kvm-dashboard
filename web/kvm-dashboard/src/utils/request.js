@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { getCookie } from './token.js';
+import { startLoading, stopLoading } from './loading.js';
 
 const service = axios.create({
     baseURL: '/golang_web',
@@ -8,6 +9,9 @@ const service = axios.create({
 
 // request interceptor
 service.interceptors.request.use(config => {
+    // start loading
+    startLoading();
+
     const token = getCookie('token')
     if(token) {
         config.headers.token = token;
@@ -19,6 +23,9 @@ service.interceptors.request.use(config => {
 
 // response interceptor
 service.interceptors.response.use(({ data }) => {
+    // stop loading
+    stopLoading();
+
     return data
 }, error => {
     Promise.reject(error)

@@ -14,9 +14,14 @@ type VMInfo struct {
 }
 
 type HostInfo struct {
-	Hostname string `json:"hostname"`
-	OsType   string `json:"os_type"`
-	CPU      int    `json:"cpu"`
-	CPUName  string `json:"cpu_name"`
-	MaxMem   string `json:"max_mem"`
+	Name       string `json:"name"`
+	Hostname   string `json:"hostname"`
+	UUID       string `json:"uuid"`
+	Ip         string `json:"ip"`
+	OsType     string `json:"os_type"`
+	CPU        int    `json:"cpu"`
+	CPUName    string `json:"cpu_name"`
+	MaxMem     string `json:"max_mem"`
+	SshPort    string `json:"ssh_port"`
+	LibvirtUrl string `json:"libvirt_url"`
 }

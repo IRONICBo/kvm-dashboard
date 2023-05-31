@@ -2,25 +2,29 @@
     <el-card class="box-card">
       <template #header>
         <div class="card-header">
-          <span>System Info</span>
+          <span>Host System Info</span>
         </div>
       </template>
       <el-row :gutter="20">
         <el-col :span="18">
-          <el-descriptions :column="6">
+          <el-descriptions :column="3">
             <!-- Use for each -->
-            <el-descriptions-item label="UUID">{{ uuid }}</el-descriptions-item>
-            <el-descriptions-item label="Hostname">{{ hostInfo.hostname }}</el-descriptions-item>
-            <el-descriptions-item label="OsType">{{ hostInfo.os_type }}</el-descriptions-item>
+            <el-descriptions-item label="UUID">{{ hostInfo.uuid }}</el-descriptions-item>
+            <el-descriptions-item label="Name">{{ hostInfo.name }}</el-descriptions-item>
             <el-descriptions-item label="CPU">{{ hostInfo.cpu }}</el-descriptions-item>
-            <el-descriptions-item label="CPUName">{{ hostInfo.cpu_name }}</el-descriptions-item>
+            <el-descriptions-item label="OsType">{{ hostInfo.os_type }}</el-descriptions-item>
+            <el-descriptions-item label="IPAddress">{{ hostInfo.ip }}</el-descriptions-item>
             <el-descriptions-item label="MaxMem">{{ hostInfo.max_mem }}</el-descriptions-item>
+            <el-descriptions-item label="CPUName">{{ hostInfo.cpu_name }}</el-descriptions-item>
+            <el-descriptions-item label="Hostname">{{ hostInfo.hostname }}</el-descriptions-item>
+            <el-descriptions-item label="SSH">{{ hostInfo.ssh_port }}</el-descriptions-item>
+            <el-descriptions-item label="Libvirt">{{ hostInfo.libvirt_url }}</el-descriptions-item>
           </el-descriptions>
         </el-col>
         <el-col :span="6">
           <el-row justify="space-between">
-            <el-col :span="6"><el-button @click="vmStart" type="primary"><el-icon><VmStart /></el-icon></el-button></el-col>
-            <el-col :span="6"><el-button @click="vmStop" type="primary"><el-icon><VmStop /></el-icon></el-button></el-col>
+            <el-col :span="12"><el-button @click="hostStart" type="primary"><el-icon><VmStart /></el-icon>&nbsp;Start Monitor</el-button></el-col>
+            <el-col :span="12"><el-button @click="hostStop" type="primary"><el-icon><VmStop /></el-icon>&nbsp;Stop Monitor</el-button></el-col>
           </el-row>
           <div v-show="controlVis">
             <el-progress :percentage="controlStatus.percent" striped striped-flow />
@@ -39,8 +43,8 @@ import VmRestart from '@/assets/icons/VmRestart';
 import VmStart from '@/assets/icons/VmStart';
 import VmStop from '@/assets/icons/VmStop';
 
-import { getVMInfo } from '@/api/info';
-import { StartWebSocket, StopWebSocket, SuspendWebSocket, ResumeWebSocket } from '@/api/control';
+import { getHostInfo } from '@/api/info';
+import { HostStartWebSocket, HostStopWebSocket } from '@/api/control';
 
 import { ElNotification,ElProgress } from 'element-plus';
 
@@ -50,18 +54,17 @@ export default {
     },
     data() {
         return {
-            hostInfo: {},
-            vmInfo: {
-              "id": "",
+            hostInfo: {
               "name": "",
+              "hostname": "",
               "uuid": "",
+              "ip": "",
               "os_type": "",
-              "state": "",
               "cpu": "",
+              "cpu_name": "",
               "max_mem": "",
-              "is_persistent": "",
-              "auto_start": "",
-              "ip_address": "",
+              "ssh_port": "",
+              "libvirt_url": ""
             },
             controlVis: false,
             controlStatus: {
@@ -76,43 +79,37 @@ export default {
       uuid: {
         immediate: true,
         handler: function (val, oldVal) {
-          console.log("watch uuid", val, oldVal)
           if (oldVal == null || val == null || val == "") {
               return;
           }
-          this.fetchVMInfo();
+          this.fetchHostInfo();
         },
       },
     },
     mounted() {
-      // this.fetchVMInfo();
+      // for reload
+      this.fetchHostInfo();
     },
     methods: {
-      fetchVMInfo() {
+      fetchHostInfo() {
         if (this.uuid == "") {
           return;
         }
 
-        getVMInfo(this.uuid)
+        getHostInfo(this.uuid)
         .then(response => {
-            this.vmInfo = response.data;
+            this.hostInfo = response.data;
             // render
         })
         .catch(error => {
             console.log(error);
         });
       },
-      vmStart() {
-        this.initWebSocket(StartWebSocket);
+      hostStart() {
+        this.initWebSocket(HostStartWebSocket);
       },
-      vmStop() {
-        this.initWebSocket(StopWebSocket);
-      },
-      vmPause() {
-        this.initWebSocket(SuspendWebSocket);
-      },
-      vmRestart() {
-        this.initWebSocket(ResumeWebSocket);
+      hostStop() {
+        this.initWebSocket(HostStopWebSocket);
       },
       initWebSocket(socket) {
         if (this.uuid == "") {
@@ -138,7 +135,7 @@ export default {
 
           if (this.controlStatus.percent == 100 && this.controlStatus.state == true) {
             ElNotification({
-              title: 'VM Status',
+              title: 'Host Status',
               message: this.controlStatus.msg,
               type: 'success',
               duration: 3000
@@ -152,7 +149,7 @@ export default {
 
           if (this.controlStatus.percent == 100 && this.controlStatus.state == false) {
             ElNotification({
-              title: 'VM Status',
+              title: 'Host Status',
               message: this.controlStatus.msg,
               type: 'error',
               duration: 3000

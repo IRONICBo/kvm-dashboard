@@ -48,7 +48,7 @@ export default {
     },
   },
   mounted() {
-        // this.initWebSocket();
+        this.initWebSocket();
   },
   unmounted() {
       // if the ws is null, can not use close method.
@@ -57,6 +57,10 @@ export default {
   methods: {
     // ws
     initWebSocket() {
+        if (this.uuid == null || this.uuid == "") {
+          return;
+        }
+
         if (typeof WebSocket === 'undefined') {
             return console.log('Your browser doesn\'t support WebSocket');
         }

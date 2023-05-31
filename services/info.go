@@ -15,13 +15,18 @@ import (
 
 // todo: use ssh to get host info
 func (svc *Service) GetHostInfo(uuid string) *model.HostInfo {
-	hostInfo := &model.HostInfo{}
-
 	username := svc.GetMachineInfo(uuid).Username
 	password := svc.GetMachineInfo(uuid).Password
 	sshPort := svc.GetMachineInfo(uuid).SshPort
 	port, _ := strconv.Atoi(sshPort)
 	ip := svc.GetMachineInfo(uuid).Ip
+
+	hostInfo := &model.HostInfo{}
+	hostInfo.Name = svc.GetMachineInfo(uuid).Name
+	hostInfo.UUID = svc.GetMachineInfo(uuid).Uuid
+	hostInfo.Ip = ip
+	hostInfo.SshPort = sshPort
+	hostInfo.LibvirtUrl = svc.GetMachineInfo(uuid).LibvirtUrl
 
 	conn, err := goph.NewConn(
 		&goph.Config{
@@ -31,12 +36,12 @@ func (svc *Service) GetHostInfo(uuid string) *model.HostInfo {
 			Auth:     goph.Password(password),
 			Callback: ssh.InsecureIgnoreHostKey(), // set unknown host key callback
 		})
-
 	// utils.Log.Info(fmt.Sprintf("username: %s, password: %s, sshPort: %s, ip: %s", username, password, sshPort, ip))
 	if err != nil {
 		utils.Log.Error(fmt.Sprintf("Can not connect to host: %#v", ip), err)
 		return hostInfo
 	}
+	defer conn.Close()
 
 	// get host name
 	hostnameOutput, err := utils.GetCommandOutput(conn, "hostname")

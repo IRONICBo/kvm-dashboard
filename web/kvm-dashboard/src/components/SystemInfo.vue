@@ -82,7 +82,6 @@ export default {
       uuid: {
         immediate: true,
         handler: function (val, oldVal) {
-          console.log("watch uuid", val, oldVal)
           if (oldVal == null || val == null || val == "") {
               return;
           }
@@ -91,7 +90,8 @@ export default {
       },
     },
     mounted() {
-      // this.fetchVMInfo();
+      // for reload
+      this.fetchVMInfo();
     },
     methods: {
       fetchVMInfo() {

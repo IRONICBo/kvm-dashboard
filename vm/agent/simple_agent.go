@@ -72,8 +72,14 @@ func (sa *SimpleAgent) Start(uuid string) {
 	// net
 	netPrev, err := vm_utils.GetCommandOutput(sa.conn, "ip", "-s link show", consts.INTERFACE_NAME)
 	if err != nil {
-		utils.Log.Error(fmt.Sprintf("Can not get next proc stat result on vm: %#v", sa.AgentInfo), err)
-		return
+		// utils.Log.Error(fmt.Sprintf("Can not get next proc stat result on vm: %#v", sa.AgentInfo), err)
+
+		// use default interface
+		netPrev, err = vm_utils.GetCommandOutput(sa.conn, "ip", "-s link show")
+		if err != nil {
+			utils.Log.Error(fmt.Sprintf("Can not get next proc stat result on vm: %#v", sa.AgentInfo), err)
+			return
+		}
 	}
 
 	go func() {
@@ -127,14 +133,21 @@ func (sa *SimpleAgent) Start(uuid string) {
 				// net
 				netCurrent, err := vm_utils.GetCommandOutput(sa.conn, "ip", "-s link show", consts.INTERFACE_NAME)
 				if err != nil {
-					utils.Log.Error(fmt.Sprintf("Can not get next proc stat result on vm: %#v", sa.AgentInfo), err)
-					return
+					// utils.Log.Error(fmt.Sprintf("Can not get next proc stat result on vm: %#v", sa.AgentInfo), err)
+
+					// use default interface
+					netPrev, err = vm_utils.GetCommandOutput(sa.conn, "ip", "-s link show")
+					if err != nil {
+						utils.Log.Error(fmt.Sprintf("Can not get next proc stat result on vm: %#v", sa.AgentInfo), err)
+						return
+					}
 				}
-				bandwith, err := vm_utils.GetCommandOutput(sa.conn, "ethtool", consts.INTERFACE_NAME)
-				if err != nil {
-					utils.Log.Error(fmt.Sprintf("Can not get next proc stat result on vm: %#v", sa.AgentInfo), err)
-					return
-				}
+				// bandwith, err := vm_utils.GetCommandOutput(sa.conn, "ethtool", consts.INTERFACE_NAME)
+				// if err != nil {
+				// 	utils.Log.Error(fmt.Sprintf("Can not get next proc stat result on vm: %#v", sa.AgentInfo), err)
+				// 	return
+				// }
+				bandwith := ""
 				rxRate, txRate, err := vm_utils.ParseNetLoad(netPrev, netCurrent, bandwith, consts.VM_DATA_REALTIME_INTERVAL)
 				if err != nil {
 					utils.Log.Error(fmt.Sprintf("Can not parse net rate on vm: %#v", sa.AgentInfo), err)
