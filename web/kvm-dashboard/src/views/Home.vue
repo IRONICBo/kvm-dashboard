@@ -44,15 +44,15 @@
 </template>
 
 <script>
-import RealTimeInfo from '@/components/RealTimeInfo.vue'
-import HistoryInfo from '@/components/HistoryInfo.vue'
-import ProcessInfo from '@/components/ProcessInfo.vue'
-import AlertInfo from '@/components/AlertInfo.vue'
-import Header from '@/components/Header.vue'
-import Aside from '@/components/Aside.vue'
-import SystemInfo from '@/components/SystemInfo.vue'
-import HostSystemInfo from '@/components/HostSystemInfo.vue'
-import MetricInfo from '@/components/MetricInfo.vue'
+import RealTimeInfo from '@/components/kvm_status/RealTimeInfo.vue'
+import HistoryInfo from '@/components/kvm_status/HistoryInfo.vue'
+import ProcessInfo from '@/components/kvm_status/ProcessInfo.vue'
+import AlertInfo from '@/components/kvm_status/AlertInfo.vue'
+import SystemInfo from '@/components/kvm_status/SystemInfo.vue'
+import HostSystemInfo from '@/components/kvm_status/HostSystemInfo.vue'
+import MetricInfo from '@/components/kvm_status/MetricInfo.vue'
+import Header from '@/components/common/Header.vue'
+import Aside from '@/components/common/Aside.vue'
 
 import {SimpleWebSocket} from '@/api/realtime';
 

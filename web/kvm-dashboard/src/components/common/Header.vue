@@ -3,18 +3,22 @@
       <el-col :span="6">
         <span class="span">KVM Dashboard</span>
       </el-col>
-      <el-col :span="1" :offset="15">
-        <el-icon style="color: #337ecc;padding-top:2vh;"><Plus /></el-icon>  
-      </el-col>
-      <el-col :span="1" >
-        <el-icon style="color: #337ecc;padding-top:2vh;"><Bell /></el-icon>  
+      <el-col :span="1" :offset="16">
+        <el-dropdown v-model="method">
+          <el-icon style="color: #337ecc;padding-top:2vh;"><Setting /></el-icon>
+          <template #dropdown>
+            <el-dropdown-menu>
+              <el-dropdown-item @click="jumpToConfig()"> Config </el-dropdown-item>
+            </el-dropdown-menu>
+          </template>
+        </el-dropdown>
       </el-col>
       <el-col :span="1" >
         <el-dropdown v-model="method">
           <el-icon style="color: #337ecc;padding-top:2vh;"><User /></el-icon>
           <template #dropdown>
             <el-dropdown-menu>
-              <el-dropdown-item @click="logout_and_clean()"> Logout </el-dropdown-item>
+              <el-dropdown-item @click="logoutAndClean()"> Logout </el-dropdown-item>
             </el-dropdown-menu>
           </template>
         </el-dropdown>
@@ -30,7 +34,10 @@ import { delCookie } from '@/utils/cookie';
 
 export default {
   methods: {
-    logout_and_clean() {
+    jumpToConfig() {
+      this.$router.push('/config')
+    },
+    logoutAndClean() {
       this.$router.push('/login')
 
       // clean cookies
