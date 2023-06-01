@@ -13,6 +13,7 @@ func WebRouter(r *gin.Engine) {
 	UserInfo := kvm_dashboard_api.Group("/user")
 	{
 		UserInfo.POST("/login", api.Login)
+		UserInfo.GET("/logout", api.Logout)
 	}
 
 	MachineInfo := kvm_dashboard_api.Group("/machine")

@@ -26,3 +26,10 @@ func setSession(c *gin.Context, username string) {
 	session.Set("username", username)
 	session.Save()
 }
+
+func (svc *Service) Logout(c *gin.Context) {
+	// clean session
+	session := sessions.Default(c)
+	session.Clear()
+	session.Save()
+}

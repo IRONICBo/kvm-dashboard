@@ -14,7 +14,7 @@
           <el-icon style="color: #337ecc;padding-top:2vh;"><User /></el-icon>
           <template #dropdown>
             <el-dropdown-menu>
-              <el-dropdown-item @click="logout()"> Logout </el-dropdown-item>
+              <el-dropdown-item @click="logout_and_clean()"> Logout </el-dropdown-item>
             </el-dropdown-menu>
           </template>
         </el-dropdown>
@@ -23,10 +23,28 @@
 </template>
 
 <script>
+import { ElNotification } from 'element-plus';
+
+import { logout } from '@/api/user';
+import { delCookie } from '@/utils/cookie';
+
 export default {
   methods: {
-    logout() {
-      this.$router.push({ name: 'Login' })
+    logout_and_clean() {
+      this.$router.push('/login')
+
+      // clean cookies
+      logout().then(response => {
+        delCookie();
+
+        ElNotification({
+          title: 'Success',
+          message: 'Logout successfully',
+          type: 'success'
+        });
+      }).catch(error => {
+        console.log(error)
+      })
     }
   }
 }

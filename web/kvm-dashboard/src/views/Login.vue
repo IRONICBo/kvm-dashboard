@@ -73,7 +73,7 @@ export default {
           });
 
           setInterval(() => {
-            this.$router.push({ name: 'Login' })
+            this.$router.push('/login')
           }, 1000);
 
           return
@@ -87,7 +87,7 @@ export default {
         });
 
         setInterval(() => {
-          this.$router.push({ name: 'Home' })
+          this.$router.push('/home')
         }, 1000);
 
       }).catch(error => {
@@ -99,11 +99,11 @@ export default {
         });
 
         setInterval(() => {
-          this.$router.push({ name: 'Login' })
+          this.$router.push('/login')
         }, 1000);
       })
       if (this.username == "admin" && this.password == "admin") {
-        this.$router.push({ name: 'Home' })
+        this.$router.push('/home')
       }
     }
   }

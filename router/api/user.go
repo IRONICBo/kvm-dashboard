@@ -24,3 +24,11 @@ func Login(c *gin.Context) {
 		c.JSON(http.StatusOK, model.Failed())
 	}
 }
+
+func Logout(c *gin.Context) {
+	// clean session
+	svc := services.NewService()
+	svc.Logout(c)
+
+	c.JSON(http.StatusOK, model.Success())
+}

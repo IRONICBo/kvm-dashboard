@@ -300,7 +300,6 @@ func (la *LibvirtAgent) GetVMInfo(uuid string) (*data.VMInfo, error) {
 	ifaces, err := dom.ListAllInterfaceAddresses(libvirt.DOMAIN_INTERFACE_ADDRESSES_SRC_AGENT)
 	if err != nil {
 		utils.Log.Error(fmt.Sprintf("Can not get ifaces: %#v", uuid), err)
-		return nil, err
 	}
 
 	ipAddress := ""
