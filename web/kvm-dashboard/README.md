@@ -6,11 +6,11 @@ KVM Dashboard is a web-based tool for monitoring and configuring virtual machine
 
 - Home
 
-![Dashboard](https://github.com/IRONICBo/kvm-dashboard/assets/47499836/60a8541c-0c6a-4b0e-a740-9c45a4c7cf7c)
+![Dashboard](https://github.com/IRONICBo/kvm-dashboard/assets/47499836/8ebdb50d-a3b1-499e-8978-cf050cffc5ab)
 
 - Login
 
-![Login](https://github.com/IRONICBo/kvm-dashboard/assets/47499836/5bc85112-20c8-4aa8-b88a-a722c7e580f4)
+![Login](https://github.com/IRONICBo/kvm-dashboard/assets/47499836/de5a6bf6-245c-4d46-beed-1997a10bbb3a)
 
 ## Live
 
