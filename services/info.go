@@ -97,7 +97,7 @@ func (svc *Service) GetVMInfo(uuid string) *model.VMInfo {
 	info, err := libvirtAgent.GetVMInfo(uuid)
 	if err != nil {
 		utils.Log.Error("Can not get vm info", err)
-		return vmInfo
+		// return vmInfo
 	}
 
 	vmInfo.Id = info.Id
