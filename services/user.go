@@ -20,7 +20,7 @@ func setSession(c *gin.Context, username string) {
 	session := sessions.Default(c)
 
 	session.Options(sessions.Options{
-		MaxAge: 60,
+		MaxAge: 60 * 60,
 		Path:   "/", // set cookie path
 	})
 	session.Set("username", username)
