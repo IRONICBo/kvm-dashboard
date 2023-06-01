@@ -4,14 +4,20 @@ module.exports = defineConfig({
     open: true, // auto open browser
     host: '127.0.0.1',
     port: 8080,
-    proxy: {
-      '/golang_web': {
-        target: 'http://127.0.0.1:5001/',
-        changeOrigin: true,
-        pathRewrite: {
-          '^/golang_web': '/' // delete /api path
-        }
-      },
+    // proxy: {
+    //   '/golang_web': {
+    //     target: 'http://127.0.0.1:5001/',
+    //     changeOrigin: true,
+    //     pathRewrite: {
+    //       '^/golang_web': '/' // delete /api path
+    //     },
+    //     cookieDomainRewrite: {
+    //       '*': '127.0.0.1'
+    //     },
+    //     cookiePathRewrite: {
+    //       '*': 'http://127.0.0.1:8080'
+    //     }
+    //   },
       // '/golang_ws': {
       //   target: 'http://127.0.0.1:5001/',
       //   ws: true, // proxy websockets
@@ -20,7 +26,7 @@ module.exports = defineConfig({
         //   '^/golang_ws': '/' // delete /api path
         // }
       // }
-    }
+    // }
   },
   transpileDependencies: true,
   lintOnSave: false // close eslint detect

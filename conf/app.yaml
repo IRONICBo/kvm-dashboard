@@ -19,3 +19,7 @@ rpc:
   client:
     host: localhost
     port: 29090
+
+user:
+  username: hust
+  password: hust

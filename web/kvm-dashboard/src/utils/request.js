@@ -3,9 +3,11 @@ import { getCookie } from './token.js';
 import { startLoading, stopLoading } from './loading.js';
 
 const service = axios.create({
-    baseURL: '/golang_web',
+    baseURL: 'http://127.0.0.1:5001/',
+    withCredentials: true,
     timeout: 5000,
 })
+
 
 // request interceptor
 service.interceptors.request.use(config => {
@@ -28,6 +30,11 @@ service.interceptors.response.use(({ data }) => {
 
     return data
 }, error => {
+    if (error.response.status === 401) {
+        // redirect to login page
+        window.location.href = '/login';
+    }
+    
     Promise.reject(error)
 })
 

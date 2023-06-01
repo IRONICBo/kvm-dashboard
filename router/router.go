@@ -1,6 +1,7 @@
 package router
 
 import (
+	"kvm-dashboard/middleware"
 	"kvm-dashboard/router/api"
 
 	"github.com/gin-gonic/gin"
@@ -9,13 +10,20 @@ import (
 func WebRouter(r *gin.Engine) {
 	kvm_dashboard_api := r.Group("/api")
 
+	UserInfo := kvm_dashboard_api.Group("/user")
+	{
+		UserInfo.POST("/login", api.Login)
+	}
+
 	MachineInfo := kvm_dashboard_api.Group("/machine")
+	MachineInfo.Use(middleware.CheckValidTimestamp())
 	{
 		MachineInfo.GET("/list", api.GetMachineList)
 		MachineInfo.GET("/threshold", api.GetMachineThreshold)
 	}
 
 	HostInfo := kvm_dashboard_api.Group("/host")
+	HostInfo.Use(middleware.CheckValidTimestamp())
 	{
 		HostInfo.GET("/basic", api.GetHostBasicInfo)
 
@@ -40,6 +48,7 @@ func WebRouter(r *gin.Engine) {
 	}
 
 	VmInfo := kvm_dashboard_api.Group("/vm")
+	VmInfo.Use(middleware.CheckValidTimestamp())
 	{
 		VmInfo.GET("/basic", api.GetVmBasicInfo)
 

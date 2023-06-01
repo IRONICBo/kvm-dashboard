@@ -58,17 +58,17 @@ func SuccessWithDataAndMsg(data interface{}, msg string) *Response {
 }
 
 func Failed() *Response {
-	return NewResponse(http.StatusInternalServerError, "failed", nil)
+	return NewResponse(http.StatusBadRequest, "failed", nil)
 }
 
 func FailedWithMsg(msg string) *Response {
-	return NewResponse(http.StatusInternalServerError, msg, nil)
+	return NewResponse(http.StatusBadRequest, msg, nil)
 }
 
 func FailedWithData(data interface{}) *Response {
-	return NewResponse(http.StatusInternalServerError, "failed", data)
+	return NewResponse(http.StatusBadRequest, "failed", data)
 }
 
 func FailedWithDataAndMsg(data interface{}, msg string) *Response {
-	return NewResponse(http.StatusInternalServerError, msg, data)
+	return NewResponse(http.StatusBadRequest, msg, data)
 }

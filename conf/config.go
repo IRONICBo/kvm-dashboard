@@ -7,10 +7,13 @@ import (
 	"github.com/spf13/viper"
 )
 
+var C *Config
+
 type Config struct {
 	AppConf      AppConf
 	InfluxDBConf InfluxDBConf
 	RpcConf      RpcConf
+	User         User
 }
 
 type AppConf struct {
@@ -33,6 +36,11 @@ type RpcConf struct {
 	SeverPort  string
 	ClientHost string
 	ClientPort string
+}
+
+type User struct {
+	Username string `json:"username"`
+	Password string `json:"password"`
 }
 
 func InitConf() *Config {
@@ -65,6 +73,10 @@ func InitConf() *Config {
 			SeverPort:  viper.GetString("rpc.server.port"),
 			ClientHost: viper.GetString("rpc.client.host"),
 			ClientPort: viper.GetString("rpc.client.port"),
+		},
+		User: User{
+			Username: viper.GetString("user.username"),
+			Password: viper.GetString("user.password"),
 		},
 	}
 
