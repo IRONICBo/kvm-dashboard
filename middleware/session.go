@@ -21,7 +21,7 @@ func CheckValidTimestamp() gin.HandlerFunc {
 
 		// expand time
 		session.Options(sessions.Options{
-			MaxAge: 60,
+			MaxAge: 60 * 60,
 			Path:   "/",
 		})
 		session.Save()
