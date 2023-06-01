@@ -72,7 +72,7 @@ export default {
             duration: 1000
           });
 
-          setInterval(() => {
+          setTimeout(() => {
             this.$router.push('/login')
           }, 1000);
 
@@ -86,7 +86,7 @@ export default {
           duration: 1000
         });
 
-        setInterval(() => {
+        setTimeout(() => {
           this.$router.push('/home')
         }, 1000);
 
@@ -98,13 +98,10 @@ export default {
           duration: 1000
         });
 
-        setInterval(() => {
+        setTimeout(() => {
           this.$router.push('/login')
         }, 1000);
       })
-      if (this.username == "admin" && this.password == "admin") {
-        this.$router.push('/home')
-      }
     }
   }
 }

@@ -1,16 +1,16 @@
 <template>
   <div class="common-layout">
     <el-container>
-      <el-header style="height: 6vh">
+      <el-header style="height: 6vh" >
         <controlHeader />
       </el-header>
-      <el-container>
+      <el-container style="height: 94vh" >
         <el-aside style="width: 250px" class="el-aside">
           <el-scrollbar class="scrollbar">
             <el-menu @select="menuClick" default-active="/host/manage">
               <el-menu-item index="/host/manage">
                 <template #title>
-                  <el-icon><Operation /></el-icon>
+                  <el-icon><Monitor /></el-icon>
                   <span
                     ><el-text size="large" tag="b">宿主机管理</el-text></span
                   >
@@ -18,7 +18,7 @@
               </el-menu-item>
               <el-menu-item index="/domain/manage">
                 <template #title>
-                  <el-icon><Operation /></el-icon>
+                  <el-icon><Money /></el-icon>
                   <span
                     ><el-text size="large" tag="b">虚拟机管理</el-text></span
                   >
@@ -49,7 +49,7 @@ import { Operation } from "@element-plus/icons-vue";
 import ControlHeader from "@/components/kvm_control/ControlHeader.vue";
 
 export default {
-  name: "HomeView",
+  name: "Config",
   components: {
     Operation,
     ControlHeader,

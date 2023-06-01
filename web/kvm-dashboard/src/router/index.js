@@ -37,22 +37,6 @@ const routes = [
                 name: 'HostManage',
                 component: () => import('@/views/kvm_control/HostManage.vue')
             },
-            // {
-            //     path: '/domain/create/view',
-            //     name: 'domainCreateView',
-            //     component: () => import('@/views/kvm_control/')
-            // },
-            // {
-            //     path: '/domain/manage/view',
-            //     name: 'domainManageView',
-            //     component: domainManageView
-            // },
-            // {
-            //     path: '/host/manage/view',
-            //     name: 'hostManageView',
-            //     component: hostManageView
-            // }
-
         ]
     }
 ]
@@ -62,6 +46,20 @@ const router = createRouter({
     history: createWebHistory(),
     routes: routes
 })
+
+router.beforeEach((to, from, next) => {
+    console.log('beforeEach triggered');
+    console.log('From:', from.path);
+    console.log('To:', to.path);
+    next();
+  });
+  
+  router.afterEach((to, from) => {
+    console.log('afterEach triggered');
+    console.log('From:', from.path);
+    console.log('To:', to.path);
+  });
+  
 
 // expose router
 export default router

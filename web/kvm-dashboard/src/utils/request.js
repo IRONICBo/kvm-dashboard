@@ -1,10 +1,11 @@
 import axios from 'axios';
 import { getCookie } from './token.js';
 import { startLoading, stopLoading } from './loading.js';
+import router from "../router";
 
 const service = axios.create({
     baseURL: 'http://127.0.0.1:5001/',
-    withCredentials: true,
+    withCredentials: true, // add cookie
     timeout: 5000,
 })
 
@@ -32,7 +33,7 @@ service.interceptors.response.use(({ data }) => {
 }, error => {
     if (error.response.status === 401) {
         // redirect to login page
-        window.location.href = '/login';
+        router.replace('/login').catch(err => {err});
     }
     
     Promise.reject(error)

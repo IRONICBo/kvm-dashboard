@@ -35,10 +35,10 @@ import { delCookie } from '@/utils/cookie';
 export default {
   methods: {
     jumpToConfig() {
-      this.$router.push('/config')
+      this.$router.replace('/config').catch(err => {err})
     },
     logoutAndClean() {
-      this.$router.push('/login')
+      this.$router.replace('/login').catch(err => {err})
 
       // clean cookies
       logout().then(response => {

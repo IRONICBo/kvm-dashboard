@@ -1,6 +1,6 @@
 <template>
   <el-row class="header">
-    <el-col :span="5">
+    <el-col :span="6">
       <el-button
         type="text"
         style="background: white"

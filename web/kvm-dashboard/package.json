@@ -19,6 +19,7 @@
     "vue": "^3.2.26",
     "vue-json-pretty": "^2.2.4",
     "vue-router": "^4.1.6",
+    "vuex": "^4.1.0",
     "websocket-heartbeat-js": "^1.1.2",
     "yarn": "^1.22.19"
   },
