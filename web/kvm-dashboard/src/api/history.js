@@ -13,7 +13,7 @@ export const postSimpleHistory = (data) => {
     //         "net_tx_rate"
     //     ]
     // }
-    return request(`/api/vm/graph/workload/history`,'post', data)
+    return request(`/api-go/vm/graph/workload/history`,'post', data)
 }
 export const postAlertHistory = (data) => {
     // {
@@ -21,7 +21,7 @@ export const postAlertHistory = (data) => {
     //     "PageSize": 10,
     //     "Page": 1
     // }
-    return request(`/api/vm/table/alert/history`,'post', data)
+    return request(`/api-go/vm/table/alert/history`,'post', data)
 }
 export const postMetricHistory = (data) => {
     // {
@@ -30,10 +30,10 @@ export const postMetricHistory = (data) => {
     //     "Period": "1h",
     //     "Func": "mean"
     // }
-    return request(`/api/vm/graph/metric/history`,'post', data)
+    return request(`/api-go/vm/graph/metric/history`,'post', data)
 }
 export const getMetricList = () => {
-    return request(`/api/vm/graph/metric/list`,'get')
+    return request(`/api-go/vm/graph/metric/list`,'get')
 }
 
 // host
@@ -48,7 +48,7 @@ export const postHostSimpleHistory = (data) => {
     //         "net_tx_rate"
     //     ]
     // }
-    return request(`/api/host/graph/workload/history`,'post', data)
+    return request(`/api-go/host/graph/workload/history`,'post', data)
 }
 export const postHostAlertHistory = (data) => {
     // {
@@ -56,5 +56,5 @@ export const postHostAlertHistory = (data) => {
     //     "PageSize": 10,
     //     "Page": 1
     // }
-    return request(`/api/host/table/alert/history`,'post', data)
+    return request(`/api-go/host/table/alert/history`,'post', data)
 }

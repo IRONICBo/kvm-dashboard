@@ -22,31 +22,42 @@ func (s *server) SetDomainThv(ctx context.Context, thres *threshold.SetDomainReq
 	data, ok := consts.VM_THRESHOLD[uuid]
 	if !ok {
 		utils.Log.Error(fmt.Sprintf("uuid %s not found", uuid))
+
+		// need not to modify threshold in memory
 		return &threshold.SetDomainResponse{
 			Status: false,
-		}, fmt.Errorf("uuid %s not found", uuid)
+		}, nil
 	}
 
-	cpuUsageThreshold, err := strconv.Atoi(thres.CpuThv)
+	var cpuUsageThreshold, memUsageThreshold, diskUsageThreshold int
+	// cpu threshold
+	res, err := strconv.ParseFloat(thres.CpuThv, 64) // 0.8
 	if err != nil {
-		utils.Log.Error(fmt.Sprintf("cpuUsageThreshold %s is not a number", thres.CpuThv))
-		return &threshold.SetDomainResponse{
-			Status: false,
-		}, err
+		utils.Log.Error(fmt.Sprintf("Failed to convert cpu threshold: %v", err))
+		cpuUsageThreshold = consts.CPU_USAGE_THRESHOLD
+	} else {
+		res = res * 100
+		cpuUsageThreshold = int(res)
 	}
-	diskUsageThreshold, err := strconv.Atoi(thres.DiskThv)
+
+	// mem threshold
+	res, err = strconv.ParseFloat(thres.MemoryThv, 64) // 0.8
 	if err != nil {
-		utils.Log.Error(fmt.Sprintf("diskUsageThreshold %s is not a number", thres.CpuThv))
-		return &threshold.SetDomainResponse{
-			Status: false,
-		}, err
+		utils.Log.Error(fmt.Sprintf("Failed to convert mem threshold: %v", err))
+		memUsageThreshold = consts.MEM_USAGE_THRESHOLD
+	} else {
+		res = res * 100
+		memUsageThreshold = int(res)
 	}
-	memUsageThreshold, err := strconv.Atoi(thres.MemoryThv)
+
+	// disk threshold
+	res, err = strconv.ParseFloat(thres.DiskThv, 64) // 0.8
 	if err != nil {
-		utils.Log.Error(fmt.Sprintf("memUsageThreshold %s is not a number", thres.CpuThv))
-		return &threshold.SetDomainResponse{
-			Status: false,
-		}, err
+		utils.Log.Error(fmt.Sprintf("Failed to convert disk threshold: %v", err))
+		diskUsageThreshold = consts.DISK_USAGE_THRESHOLD
+	} else {
+		res = res * 100
+		diskUsageThreshold = int(res)
 	}
 
 	data.CpuUsageThreshold = cpuUsageThreshold

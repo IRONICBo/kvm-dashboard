@@ -8,7 +8,7 @@ import (
 )
 
 func WebRouter(r *gin.Engine) {
-	kvm_dashboard_api := r.Group("/api")
+	kvm_dashboard_api := r.Group("/api-go")
 
 	UserInfo := kvm_dashboard_api.Group("/user")
 	{
