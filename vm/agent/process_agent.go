@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"kvm-dashboard/consts"
+	"kvm-dashboard/model"
 	"kvm-dashboard/utils"
 	"kvm-dashboard/vm/data"
 	"kvm-dashboard/vm/vm_utils"
@@ -24,6 +25,39 @@ type ProcessAgent struct {
 	Ctx         context.Context // one ctx for one goroutine
 	CancelFunc  context.CancelFunc
 	ProcessData chan []*data.ProcessData
+}
+
+func NewProcessAgentWithJumpServer(agentInfo *AgentInfo, jumpServerInfo *model.Machine) (*ProcessAgent, error) {
+	if ProcessAgents == nil {
+		ProcessAgents = make(map[string]*ProcessAgent)
+	}
+
+	jumpServer, err := vm_utils.NewJumpServer(jumpServerInfo.Username,
+		jumpServerInfo.Password, jumpServerInfo.Ip, jumpServerInfo.SshPort)
+	if err != nil {
+		utils.Log.Error(fmt.Sprintf("Can not connect to jumpserver: %#v", jumpServerInfo), err)
+		return nil, err
+	}
+
+	// use jump serve to get connection
+	conn, err := vm_utils.JumpToServer(jumpServer,
+		agentInfo.User, agentInfo.Password, agentInfo.Ip, fmt.Sprintf("%d", agentInfo.Port))
+	if err != nil {
+		utils.Log.Error(fmt.Sprintf("Can not connect to vm: %#v", agentInfo), err)
+		return nil, err
+	}
+
+	// create context
+	ctx, cancelFunc := context.WithCancel(context.Background())
+
+	agent := &ProcessAgent{
+		AgentInfo:  agentInfo,
+		conn:       conn,
+		Ctx:        ctx,
+		CancelFunc: cancelFunc,
+	}
+
+	return agent, nil
 }
 
 func NewProcessAgent(agentInfo *AgentInfo) (*ProcessAgent, error) {

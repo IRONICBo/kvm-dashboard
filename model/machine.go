@@ -8,9 +8,10 @@ type Machine struct {
 	LibvirtUrl string `json:"libvirt_url"`
 	Username   string `json:"username"`
 	Password   string `json:"password"`
+	HostUUID   string `json:"host_uuid"`
 }
 
-func NewMachine(name, uuid, ip, sshPort, libvirtUrl, username, password string) *Machine {
+func NewMachine(name, uuid, ip, sshPort, libvirtUrl, username, password, hostUUID string) *Machine {
 	return &Machine{
 		Name:       name,
 		Uuid:       uuid,
@@ -19,6 +20,7 @@ func NewMachine(name, uuid, ip, sshPort, libvirtUrl, username, password string) 
 		LibvirtUrl: libvirtUrl,
 		Username:   username,
 		Password:   password,
+		HostUUID:   hostUUID,
 	}
 }
 

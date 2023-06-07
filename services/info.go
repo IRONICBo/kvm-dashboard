@@ -87,14 +87,19 @@ func (svc *Service) GetHostInfo(uuid string) *model.HostInfo {
 func (svc *Service) GetVMInfo(uuid string) *model.VMInfo {
 	vmInfo := &model.VMInfo{}
 
-	libvirtURL := svc.GetMachineInfo(uuid).LibvirtUrl
+	tempVMInfo := svc.GetMachineInfo(uuid)
+	libvirtURL := tempVMInfo.LibvirtUrl
 	libvirtAgent, err := agent.NewLibvirtAgent(libvirtURL)
 	if err != nil {
 		utils.Log.Error("Can not create libvirt agent", err)
 		return vmInfo
 	}
 
-	info, err := libvirtAgent.GetVMInfo(uuid)
+	// get host info
+	tempHostInfo := svc.GetMachineInfo(tempVMInfo.HostUUID)
+
+	// use host as jumpserver
+	info, err := libvirtAgent.GetVMInfoWithJumpServer(uuid, tempHostInfo)
 	if err != nil {
 		utils.Log.Error("Can not get vm info", err)
 		// return vmInfo

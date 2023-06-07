@@ -50,3 +50,16 @@ func ParseTopData(out string) []*data.ProcessData {
 
 	return processes
 }
+
+// parse first line to get ip address
+func ParseARPData(out string) string {
+	// 192.168.122.191   ether  52:54:00:58:de:82   C  virbr0
+	if out == "" {
+		return ""
+	}
+
+	strs := strings.Split(out, "\n")
+	fields := strings.Fields(strs[0])
+
+	return fields[0]
+}

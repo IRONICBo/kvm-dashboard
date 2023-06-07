@@ -5,8 +5,10 @@ import (
 	"errors"
 	"fmt"
 	"kvm-dashboard/consts"
+	"kvm-dashboard/model"
 	"kvm-dashboard/utils"
 	"kvm-dashboard/vm/data"
+	"kvm-dashboard/vm/vm_utils"
 	"time"
 
 	libvirt "libvirt.org/libvirt-go"
@@ -309,8 +311,104 @@ func (la *LibvirtAgent) GetVMInfo(uuid string) (*data.VMInfo, error) {
 			for _, addr := range iface.Addrs {
 				if addr.Type == libvirt.IP_ADDR_TYPE_IPV4 {
 					ipAddress = addr.Addr
+					break // use first address
 				}
 			}
+		}
+	}
+
+	vmInfo := &data.VMInfo{
+		Id:           id,
+		Name:         name,
+		UUID:         uuid,
+		OsType:       osType,
+		State:        int(state),
+		CPU:          cpu,
+		MaxMem:       maxMem,
+		IsPersistent: isPersistent,
+		AutoStart:    autoStart,
+		IpAddress:    ipAddress,
+	}
+
+	return vmInfo, err
+}
+
+func (la *LibvirtAgent) GetVMInfoWithJumpServer(uuid string, jumpServerInfo *model.Machine) (*data.VMInfo, error) {
+	dom, err := la.conn.LookupDomainByUUIDString(uuid)
+	if err != nil {
+		utils.Log.Error(fmt.Sprintf("Can not get dom: %#v", uuid), err)
+		return nil, err
+	}
+	defer dom.Free()
+
+	id, err := dom.GetID()
+	if err != nil {
+		utils.Log.Error(fmt.Sprintf("Can not get id: %#v", uuid), err)
+	}
+
+	name, err := dom.GetName()
+	if err != nil {
+		utils.Log.Error(fmt.Sprintf("Can not get name: %#v", uuid), err)
+	}
+
+	osType, err := dom.GetOSType()
+	if err != nil {
+		utils.Log.Error(fmt.Sprintf("Can not get osType: %#v", uuid), err)
+	}
+
+	state, _, err := dom.GetState()
+	if err != nil {
+		utils.Log.Error(fmt.Sprintf("Can not get state: %#v", uuid), err)
+	}
+
+	maxMem, err := dom.GetMaxMemory()
+	if err != nil {
+		utils.Log.Error(fmt.Sprintf("Can not get maxMem: %#v", uuid), err)
+	}
+
+	cpuInfo, err := dom.GetVcpus()
+	if err != nil {
+		utils.Log.Error(fmt.Sprintf("Can not get cpuInfo: %#v", uuid), err)
+	}
+	cpu := len(cpuInfo)
+
+	isPersistent, err := dom.IsPersistent()
+	if err != nil {
+		utils.Log.Error(fmt.Sprintf("Can not get isPersistent: %#v", uuid), err)
+	}
+
+	autoStart, err := dom.GetAutostart()
+	if err != nil {
+		utils.Log.Error(fmt.Sprintf("Can not get autoStart: %#v", uuid), err)
+	}
+
+	// get ip address
+	// use jump server to get ip address
+	jumpServerConn, err := vm_utils.NewJumpServer(jumpServerInfo.Username,
+		jumpServerInfo.Password, jumpServerInfo.Ip, jumpServerInfo.SshPort)
+	if err != nil {
+		utils.Log.Error("Can not create jump server", err)
+	}
+
+	ifaces, err := dom.ListAllInterfaceAddresses(libvirt.DOMAIN_INTERFACE_ADDRESSES_SRC_AGENT)
+	if err != nil {
+		utils.Log.Error(fmt.Sprintf("Can not get ifaces: %#v", uuid), err)
+	}
+
+	ipAddress := ""
+	for _, iface := range ifaces {
+		if len(iface.Addrs) > 0 && iface.Name == consts.INTERFACE_NAME {
+			// ipAddress = iface.Addrs
+			MACAddress := iface.Hwaddr
+			out, err := vm_utils.GetCommandOutput(jumpServerConn, "arp", "|", "grep", MACAddress)
+			if err != nil {
+				utils.Log.Error("Can not get ip address", err)
+			}
+			if len(out) == 0 {
+				continue
+			}
+			ipAddress = vm_utils.ParseARPData(out)
+			break // use first interface
 		}
 	}
 

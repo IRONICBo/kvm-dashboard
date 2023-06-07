@@ -4,17 +4,23 @@ import (
 	"fmt"
 	"kvm-dashboard/utils"
 	"net"
+	"strconv"
 
 	"github.com/melbahja/goph"
 	"golang.org/x/crypto/ssh"
 )
 
 // Use jump server (host machine) to get remote/local info
-func NewJumpServer(user, password, ip string, port uint) (*goph.Client, error) {
+func NewJumpServer(user, password, ip, port string) (*goph.Client, error) {
+	port_int, err := strconv.ParseInt(port, 10, 0)
+	if err != nil {
+		utils.Log.Error("Can not convert ssh port to int", err)
+	}
+
 	jumpConfig := &goph.Config{
 		User:     user,
 		Addr:     ip,
-		Port:     port,
+		Port:     uint(port_int),
 		Auth:     goph.Password(password),
 		Callback: ssh.InsecureIgnoreHostKey(), // set unknown host key callback
 	}
@@ -28,11 +34,16 @@ func NewJumpServer(user, password, ip string, port uint) (*goph.Client, error) {
 	return conn, nil
 }
 
-func JumpToServer(base *goph.Client, user, password, ip string, port uint) (*goph.Client, error) {
+func JumpToServer(base *goph.Client, user, password, ip, port string) (*goph.Client, error) {
+	port_int, err := strconv.ParseInt(port, 10, 0)
+	if err != nil {
+		utils.Log.Error("Can not convert ssh port to int", err)
+	}
+
 	newConfig := &goph.Config{
 		User:     user,
 		Addr:     ip,
-		Port:     port,
+		Port:     uint(port_int),
 		Auth:     goph.Password(password),
 		Callback: ssh.InsecureIgnoreHostKey(), // set unknown host key callback
 	}

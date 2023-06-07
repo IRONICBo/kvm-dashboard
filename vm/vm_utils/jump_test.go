@@ -12,7 +12,7 @@ func TestJumpToServer(t *testing.T) {
 		"root",
 		"",
 		"127.0.0.1",
-		22,
+		"22",
 	)
 	assert.Equal(t, err, nil)
 
@@ -21,7 +21,7 @@ func TestJumpToServer(t *testing.T) {
 		"root",
 		"",
 		"192.168.122.166",
-		22,
+		"22",
 	)
 	assert.Equal(t, err, nil)
 

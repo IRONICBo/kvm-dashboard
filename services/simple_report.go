@@ -41,11 +41,12 @@ func (svc *Service) GetSimpleData(uuid, period, agg string, fields []string) []*
 }
 
 func (svc *Service) StartHostSimpleReport(uuid string) error {
-	username := svc.GetMachineInfo(uuid).Username
-	password := svc.GetMachineInfo(uuid).Password
-	sshPort := svc.GetMachineInfo(uuid).SshPort
+	tempVMInfo := svc.GetMachineInfo(uuid)
+	username := tempVMInfo.Username
+	password := tempVMInfo.Password
+	sshPort := tempVMInfo.SshPort
 	port, _ := strconv.Atoi(sshPort)
-	ip := svc.GetMachineInfo(uuid).Ip
+	ip := tempVMInfo.Ip
 
 	simpleAgent, err := agent.NewSimpleAgent(
 		&agent.AgentInfo{
@@ -56,7 +57,6 @@ func (svc *Service) StartHostSimpleReport(uuid string) error {
 			Port:     uint(port),
 		},
 	)
-
 	if err != nil {
 		utils.Log.Error("Can not create simple agent", err)
 		return err
@@ -73,14 +73,19 @@ func (svc *Service) StartHostSimpleReport(uuid string) error {
 
 // Start agent and report Simple data
 func (svc *Service) StartSimpleReport(uuid string) error {
-	// get ip address
-	vminfo := svc.GetVMInfo(uuid)
-	username := svc.GetMachineInfo(uuid).Username
-	password := svc.GetMachineInfo(uuid).Password
-	sshPort := svc.GetMachineInfo(uuid).SshPort
+	tempVMInfo := svc.GetMachineInfo(uuid)
+	username := tempVMInfo.Username
+	password := tempVMInfo.Password
+	sshPort := tempVMInfo.SshPort
 	port, _ := strconv.Atoi(sshPort)
 
-	simpleAgent, err := agent.NewSimpleAgent(
+	// get Ip address
+	vminfo := svc.GetVMInfo(uuid)
+
+	// hostinfo
+	hostInfo := svc.GetMachineInfo(tempVMInfo.HostUUID)
+
+	simpleAgent, err := agent.NewSimpleAgentWithJumpServer(
 		&agent.AgentInfo{
 			UUID:     uuid,
 			User:     username,
@@ -88,8 +93,8 @@ func (svc *Service) StartSimpleReport(uuid string) error {
 			Ip:       vminfo.IpAddress,
 			Port:     uint(port),
 		},
+		hostInfo,
 	)
-
 	if err != nil {
 		utils.Log.Error("Can not create simple agent", err)
 		return err

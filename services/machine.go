@@ -95,6 +95,7 @@ func (svc *Service) GetMachineList() (*model.MachineInfo, error) {
 			fmt.Sprintf("qemu+tcp://%s:%s/system", hostInfo.Ip, hostInfo.QemuPort),
 			hostInfo.Username,
 			hostInfo.Passwd,
+			"",
 		)
 		hosts = append(hosts, host)
 
@@ -114,12 +115,21 @@ func (svc *Service) GetMachineList() (*model.MachineInfo, error) {
 			fmt.Sprintf("qemu+tcp://%s:%s/system", hostInfo.Ip, hostInfo.QemuPort),
 			consts.USERNAME,
 			consts.PASSWORD,
+			vmInfo.HostId,
 		)
 		vms = append(vms, vm)
 	}
 
 	updateMachineInfo(hosts, vms)
 	machineInfo := model.NewMachineInfo(hosts, vms)
+
+	// for _, info := range machineInfo.HostInfo {
+	// 	utils.Log.Info(fmt.Sprintf("Host: %#v", info))
+	// }
+	// for _, info := range machineInfo.VmInfo {
+	// 	utils.Log.Info(fmt.Sprintf("VM: %#v", info))
+	// }
+
 	return machineInfo, nil
 }
 
@@ -160,5 +170,6 @@ func (svc *Service) GetMachineInfo(uuid string) *model.Machine {
 		consts.LIBVIRT_URL,
 		consts.USERNAME,
 		consts.PASSWORD,
+		"",
 	)
 }
