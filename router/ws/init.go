@@ -9,7 +9,7 @@ import (
 
 type WSServer struct {
 	server  *melody.Melody
-	sessMap map[string]*melody.Session
+	sessMap map[string]map[string]*melody.Session
 }
 
 func NewWSServer() *WSServer {
@@ -18,12 +18,32 @@ func NewWSServer() *WSServer {
 
 	return &WSServer{
 		server:  m,
-		sessMap: make(map[string]*melody.Session),
+		sessMap: make(map[string]map[string]*melody.Session),
 	}
 }
 
+// broadcast
 func (ws *WSServer) WriteData(uuid string, data string) error {
-	sess, ok := ws.sessMap[uuid]
+	sessDevice, ok := ws.sessMap[uuid]
+	if !ok {
+		return errors.New("can not find session")
+	}
+
+	// write to all devices
+	for _, sess := range sessDevice {
+		sess.Write([]byte(data))
+	}
+
+	return nil
+}
+
+func (ws *WSServer) WriteDataToDevice(uuid string, device string, data string) error {
+	sessDevice, ok := ws.sessMap[uuid]
+	if !ok {
+		return errors.New("can not find session")
+	}
+
+	sess, ok := sessDevice[device]
 	if !ok {
 		return errors.New("can not find session")
 	}
@@ -33,13 +53,32 @@ func (ws *WSServer) WriteData(uuid string, data string) error {
 	return nil
 }
 
-func (ws *WSServer) CloseSession(uuid string) error {
-	sess, ok := ws.sessMap[uuid]
+func (ws *WSServer) CloseSessionWithDevice(uuid string, device string) error {
+	sessDevice, ok := ws.sessMap[uuid]
+	if !ok {
+		return errors.New("can not find session")
+	}
+
+	sess, ok := sessDevice[device]
 	if !ok {
 		return errors.New("can not find session")
 	}
 
 	sess.Close()
+
+	return nil
+}
+
+// boardcast
+func (ws *WSServer) CloseSession(uuid string) error {
+	sessDevice, ok := ws.sessMap[uuid]
+	if !ok {
+		return errors.New("can not find session")
+	}
+
+	for _, sess := range sessDevice {
+		sess.Close()
+	}
 
 	return nil
 }

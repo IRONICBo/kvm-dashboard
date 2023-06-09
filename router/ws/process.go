@@ -1,6 +1,8 @@
 package ws
 
 import (
+	"errors"
+	"kvm-dashboard/consts"
 	"kvm-dashboard/utils"
 	"net/http"
 
@@ -15,7 +17,7 @@ func NewProcessWSServer() {
 
 	ProcessWSServer = &WSServer{
 		server:  m,
-		sessMap: make(map[string]*melody.Session),
+		sessMap: make(map[string]map[string]*melody.Session),
 	}
 
 	// hook
@@ -35,13 +37,33 @@ func (ws *WSServer) HandleProcessRequest(w http.ResponseWriter, r *http.Request)
 
 func (ws *WSServer) HandleProcessConnect(s *melody.Session) {
 	uuid := s.Request.URL.Query().Get("UUID")
+	// todo: replace with user id
+	token := s.Request.URL.Query().Get("token")
+	if token == "" {
+		token = consts.DEFAULT_TOKEN
+	}
 
-	ws.sessMap[uuid] = s
+	// if not exist, create
+	if _, ok := ws.sessMap[uuid]; !ok {
+		ws.sessMap[uuid] = make(map[string]*melody.Session)
+	}
+	ws.sessMap[uuid][token] = s
 }
 
 func (ws *WSServer) HandleProcessClose(s *melody.Session, msg int, reason string) error {
 	uuid := s.Request.URL.Query().Get("UUID")
+	// todo: replace with user id
+	token := s.Request.URL.Query().Get("token")
+	if token == "" {
+		token = consts.DEFAULT_TOKEN
+	}
 
-	delete(ws.sessMap, uuid)
+	sessDevice, ok := ws.sessMap[uuid]
+	if !ok {
+		return errors.New("can not find session")
+	}
+
+	delete(sessDevice, token)
+
 	return nil
 }

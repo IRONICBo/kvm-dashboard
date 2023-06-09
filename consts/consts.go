@@ -40,3 +40,5 @@ const (
 	SIMPLE_MEASUREMENT = "simple"
 	ALERT_MEASUREMENT  = "alert"
 )
+
+const DEFAULT_TOKEN = "default"
