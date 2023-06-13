@@ -28,6 +28,12 @@ func WebRouter(r *gin.Engine) {
 	{
 		HostInfo.GET("/basic", api.GetHostBasicInfo)
 
+		Device := HostInfo.Group("/device")
+		{
+			Device.GET("/disk/list", api.GetHostDiskList)
+			Device.GET("/interface/list", api.GetHostInterfaceList)
+		}
+
 		Control := HostInfo.Group("/control")
 		{
 			Control.GET("/start_report/ws", api.StartHostReport)
@@ -52,6 +58,12 @@ func WebRouter(r *gin.Engine) {
 	VmInfo.Use(middleware.CheckValidTimestamp())
 	{
 		VmInfo.GET("/basic", api.GetVmBasicInfo)
+
+		Device := HostInfo.Group("/device")
+		{
+			Device.GET("/disk/list", api.GetVMDiskList)
+			Device.GET("/interface/list", api.GetVMInterfaceList)
+		}
 
 		Control := VmInfo.Group("/control")
 		{
