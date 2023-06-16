@@ -1,0 +1,9 @@
+连接到域 kylin-desktop
+Escape character is ^] (Ctrl + ])
+
+Kylin V10 SP1 kylin-desktop ttyAMA0
+
+kylin-desktop login: 
+Kylin V10 SP1 kylin-desktop ttyAMA0
+
+kylin-desktop login: 
