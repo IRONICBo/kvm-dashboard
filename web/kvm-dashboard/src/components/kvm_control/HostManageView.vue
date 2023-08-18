@@ -131,7 +131,7 @@ export default defineComponent({
           i < currentPageTemp * this.pageSize;
           i++
         ) {
-          this.hostListCurrent.push(this.hostList.at(i));
+          this.hostListCurrent.push(this.hostList[i]);
         }
       } else {
         // 当前页面不能够填满
@@ -140,7 +140,7 @@ export default defineComponent({
           i < this.hostList.length;
           i++
         ) {
-          this.hostListCurrent.push(this.hostList.at(i));
+          this.hostListCurrent.push(this.hostList[i]);
         }
       }
     },

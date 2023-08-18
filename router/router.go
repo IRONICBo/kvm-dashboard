@@ -59,7 +59,7 @@ func WebRouter(r *gin.Engine) {
 	{
 		VmInfo.GET("/basic", api.GetVmBasicInfo)
 
-		Device := HostInfo.Group("/device")
+		Device := VmInfo.Group("/device")
 		{
 			Device.GET("/disk/list", api.GetVMDiskList)
 			Device.GET("/interface/list", api.GetVMInterfaceList)

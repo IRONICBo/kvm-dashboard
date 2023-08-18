@@ -297,8 +297,8 @@ export default defineComponent({
           this.VmParamInfo.vmHostId = "localhost";
           break;
         }
-        if (this.hostList.at(i)["hostName"] == this.hostOptionDefault) {
-          this.VmParamInfo.vmHostId = this.hostList.at(i)["hostId"];
+        if (this.hostList[i]["hostName"] == this.hostOptionDefault) {
+          this.VmParamInfo.vmHostId = this.hostList[i]["hostId"];
           break;
         }
       }
@@ -354,7 +354,7 @@ export default defineComponent({
       if (resp.code == 200) {
         this.hostList = resp.data;
         for (let i = 0; i < this.hostList.length; i++) {
-          var temp = this.hostList.at(i);
+          var temp = this.hostList[i];
           var tempList = new Object();
           tempList.value = temp["hostName"];
           this.hostOptions.push(tempList);

@@ -231,7 +231,7 @@ export default defineComponent({
           i < currentPageTemp * this.pageSize;
           i++
         ) {
-          this.domainListCurrent.push(this.domainList.at(i));
+          this.domainListCurrent.push(this.domainList[i]);
         }
       } else {
         // 当前页面不能够填满
@@ -240,7 +240,7 @@ export default defineComponent({
           i < this.domainList.length;
           i++
         ) {
-          this.domainListCurrent.push(this.domainList.at(i));
+          this.domainListCurrent.push(this.domainList[i]);
         }
       }
     },
@@ -250,10 +250,10 @@ export default defineComponent({
         if (resp.code == 200) {
           this.domainList = resp.data;
           for (let i = 0; i < this.domainList.length; i++) {
-            if (this.domainList.at(i).vmCreateForm == "0") {
-              this.domainList.at(i).vmCreateForm = "本地安装介质";
-            } else if (this.domainList.at(i).vmCreateForm == "1") {
-              this.domainList.at(i).vmCreateForm = "现有磁盘镜像";
+            if (this.domainList[i].vmCreateForm == "0") {
+              this.domainList[i].vmCreateForm = "本地安装介质";
+            } else if (this.domainList[i].vmCreateForm == "1") {
+              this.domainList[i].vmCreateForm = "现有磁盘镜像";
             }
           }
           this.total = parseInt(this.domainList.length);
@@ -341,7 +341,7 @@ export default defineComponent({
         if (resp.code == 200) {
           this.hostList = resp.data;
           for (let i = 0; i < this.hostList.length; i++) {
-            var temp = this.hostList.at(i);
+            var temp = this.hostList[i];
             var tempList = new Object();
             tempList.value = temp["hostName"];
             this.hostOptions.push(tempList);
@@ -411,8 +411,8 @@ export default defineComponent({
     updateVmHostId() {
       this.tempPath = "/";
       for (var i = 0; i < this.hostList.length; i++) {
-        if (this.hostList.at(i)["hostName"] == this.waitHostName) {
-          this.migrateInfo.newHostId = this.hostList.at(i)["hostId"];
+        if (this.hostList[i]["hostName"] == this.waitHostName) {
+          this.migrateInfo.newHostId = this.hostList[i]["hostId"];
           break;
         }
       }
