@@ -50,7 +50,7 @@ func JumpToServer(base *goph.Client, user, password, ip, port string) (*goph.Cli
 
 	newClient, err := jumpDial(base.Client, "tcp", newConfig)
 	if err != nil {
-		utils.Log.Error(fmt.Sprintf("Can not connect to jumpserver: %#v", newConfig), err)
+		utils.Log.Error(fmt.Sprintf("Can not connect to dialserver: %#v", newConfig), err)
 		return nil, err
 	}
 
