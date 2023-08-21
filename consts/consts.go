@@ -5,7 +5,7 @@ const (
 	LIBVIRT_URL    = "qemu+tcp://localhost:16509/system" // default url
 	INTERFACE_NAME = "enp1s0"
 	USERNAME       = "root"
-	PASSWORD       = "123123"
+	PASSWORD       = "Ww1270278575"
 	PORT           = 22
 )
 
